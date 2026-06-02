@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configurações do Sistema</title>
+  <style>
+    :root{
+      --orange:#ff8a00;
+      --orange2:#ff6b00;
+      --blue:#3b82f6;
+      --text:#f8fafc;
+      --muted:#cbd5e1;
+      --line:rgba(255,255,255,.14);
+      --glass:rgba(6,15,25,.82);
+      --shadow:0 28px 80px rgba(0,0,0,.44);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;color:var(--text);background:#020812}
+    body{
+      min-height:100vh;
+      background:
+        radial-gradient(circle at 82% 16%,rgba(255,138,0,.22),transparent 30%),
+        linear-gradient(135deg,#020812 0%,#07131f 52%,#120905 100%);
+    }
+    a{color:inherit;text-decoration:none}
+    .page{width:min(1180px,100%);margin:0 auto;min-height:100vh;padding:28px;display:grid;grid-template-columns:1fr 390px;gap:20px;align-items:start}
+    .top{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:4px}
+    .title small{display:block;color:var(--orange);font-weight:950;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px}
+    h1{margin:0;font-size:clamp(28px,4vw,42px);text-transform:uppercase;line-height:1}
+    .back{padding:12px 16px;border-radius:12px;border:1px solid rgba(255,138,0,.45);color:var(--orange);font-weight:900;text-transform:uppercase;background:rgba(255,138,0,.07)}
+    .panel{background:linear-gradient(145deg,rgba(15,27,40,.92),rgba(3,12,22,.84));border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+    .panel-title{padding:16px 18px;border-bottom:1px solid var(--line);font-weight:950;text-transform:uppercase;color:#fff}
+    form{padding:18px;display:grid;gap:15px}
+    .field{display:grid;gap:7px}
+    label{font-size:12px;color:#e5e7eb;font-weight:950;text-transform:uppercase;letter-spacing:.3px}
+    input,textarea{width:100%;min-height:44px;border:1px solid rgba(255,255,255,.16);border-radius:11px;background:rgba(2,8,15,.76);color:#fff;padding:11px 12px;font-size:14px;outline:none}
+    input:focus,textarea:focus{border-color:rgba(255,138,0,.85);box-shadow:0 0 0 3px rgba(255,138,0,.13)}
+    textarea{min-height:82px;resize:vertical}
+    input[type=file]{padding:9px}
+    .hint{font-size:12px;line-height:1.4;color:var(--muted)}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:2px}
+    button{border:none;border-radius:11px;min-height:44px;padding:10px 15px;color:#fff;font-weight:950;text-transform:uppercase;cursor:pointer}
+    .save{background:linear-gradient(135deg,var(--orange),var(--orange2))}.preview-btn{background:#1d4ed8}.clear{background:#374151}.remove{background:#4b5563}
+    .status{display:none;padding:11px;border-radius:11px;border:1px solid rgba(34,197,94,.42);background:rgba(34,197,94,.12);color:#86efac;font-size:13px;font-weight:850}
+    .status.show{display:block}
+    .connection-box{display:grid;gap:8px;margin-top:8px;padding:10px 11px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(2,8,15,.46)}
+    .connection-status{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;font-weight:900;color:#cbd5e1;line-height:1.35}
+    .connection-status strong{color:#fff;text-transform:uppercase;font-size:11px;letter-spacing:.35px}
+    .connection-status.ok strong{color:#86efac}.connection-status.erro strong{color:#fca5a5}.connection-status.testando strong{color:#fbbf24}
+    .connection-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .test-connection{background:#166534;min-height:36px;padding:8px 11px;font-size:11px}
+    .url-chip{font-size:11px;color:#94a3b8;overflow-wrap:anywhere}
+    .preview{padding:20px;display:grid;gap:18px}
+    .preview-card{min-height:420px;border-radius:18px;border:1px solid rgba(255,138,0,.36);background-image:linear-gradient(180deg,rgba(0,7,13,.58),rgba(0,7,13,.92)),url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=80');background-size:cover;background-position:center;display:grid;place-items:center;text-align:center;padding:24px;overflow:hidden}
+    .preview-inner{display:grid;justify-items:center;gap:10px;width:100%}
+    .preview-logo{display:none;width:190px;max-height:110px;object-fit:contain;border:none;background:transparent;padding:0;border-radius:0;box-shadow:none}
+    .preview-system{color:var(--orange);letter-spacing:8px;font-size:13px;font-weight:950;text-transform:uppercase}
+    .preview-welcome{margin-top:24px;font-size:28px;font-weight:300;text-transform:uppercase}
+    .preview-name{color:var(--orange);font-size:38px;font-weight:950;line-height:1;text-transform:uppercase;overflow-wrap:anywhere;max-width:100%}
+    .preview-slogan{font-size:16px;color:#f1f5f9;line-height:1.35}.line{width:70px;height:3px;border-radius:999px;background:var(--orange);margin-top:10px}
+    .mini-logo{display:grid;place-items:center;width:96px;height:72px;border-radius:16px;background:linear-gradient(145deg,rgba(255,138,0,.95),rgba(255,107,0,.24));border:1px solid rgba(255,138,0,.45)}
+
+    .user-panel{grid-column:1/-1}
+    .user-grid{padding:18px;display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-items:end}
+    .user-grid .field{min-width:0}
+    select{width:100%;min-height:44px;border:1px solid rgba(255,255,255,.16);border-radius:11px;background:rgba(2,8,15,.76);color:#fff;padding:11px 12px;font-size:14px;outline:none}
+    select:focus{border-color:rgba(255,138,0,.85);box-shadow:0 0 0 3px rgba(255,138,0,.13)}
+    .user-actions{display:flex;gap:10px;flex-wrap:wrap;padding:0 18px 18px}
+    .user-list{padding:0 18px 18px;display:grid;gap:10px}
+    .user-card{display:grid;grid-template-columns:1.3fr 1fr .8fr .8fr auto;gap:10px;align-items:center;padding:12px;border:1px solid rgba(255,255,255,.12);border-radius:13px;background:rgba(2,8,15,.54)}
+    .user-card strong{font-size:14px;color:#fff}.user-card span{font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+    .pill{display:inline-flex;align-items:center;justify-content:center;width:max-content;min-width:70px;padding:6px 9px;border-radius:999px;font-size:11px;font-weight:950;text-transform:uppercase;border:1px solid rgba(255,255,255,.14)}
+    .pill.admin{color:#fbbf24;background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.35)}
+    .pill.usuario{color:#93c5fd;background:rgba(59,130,246,.12);border-color:rgba(59,130,246,.35)}
+    .pill.ativo{color:#86efac;background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.35)}
+    .pill.inativo{color:#fca5a5;background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.35)}
+    .user-card-actions{display:flex;gap:7px;justify-content:flex-end;flex-wrap:wrap}
+    .small-btn{min-height:34px;padding:7px 10px;border-radius:9px;font-size:11px}.edit{background:#2563eb}.danger{background:#b91c1c}.toggle{background:#475569}
+    .empty-users{padding:14px;border:1px dashed rgba(255,255,255,.18);border-radius:13px;color:var(--muted);font-size:13px;text-align:center;background:rgba(2,8,15,.42)}
+    @media(max-width:920px){.user-grid{grid-template-columns:1fr 1fr}.user-card{grid-template-columns:1fr;align-items:start}.user-card-actions{justify-content:flex-start}}
+    @media(max-width:560px){.user-grid{grid-template-columns:1fr}.user-actions button{width:100%}.user-card-actions button{flex:1}}
+    @media(max-width:920px){.page{grid-template-columns:1fr;padding:18px}.top{flex-direction:column;align-items:stretch}.back{text-align:center}.preview-card{min-height:330px}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div class="title"><small>Configuração</small><h1>Identidade do Sistema</h1></div>
+      <a class="back" href="index.html">← Voltar ao Menu</a>
+    </header>
+
+    <section class="panel">
+      <div class="panel-title">Dados exibidos no index</div>
+      <form id="formConfig" autocomplete="off">
+        <div class="field">
+          <label for="companyName">Nome da empresa</label>
+          <input id="companyName" type="text" placeholder="Digite o nome que aparecerá no menu" />
+        </div>
+        <div class="field">
+          <label for="slogan">Slogan / descrição</label>
+          <input id="slogan" type="text" placeholder="Ex.: Gestão e monitoramento de obras em um só lugar" />
+        </div>
+        <div class="field">
+          <label for="logoFile">Logotipo</label>
+          <input id="logoFile" type="file" accept="image/png,image/jpeg,image/webp" />
+          <div class="hint">A logo será salva no navegador e aparecerá no index sem borda.</div>
+          <div class="actions"><button class="remove" type="button" id="removeLogo">Remover Logo</button></div>
+        </div>
+        <div class="field">
+          <label for="bgFile">Imagem de fundo</label>
+          <input id="bgFile" type="file" accept="image/png,image/jpeg,image/webp" />
+          <div class="hint">Opcional. Se não inserir imagem, o index usa o fundo padrão.</div>
+          <div class="actions"><button class="remove" type="button" id="removeBg">Remover Fundo</button></div>
+        </div>
+        <div class="field">
+          <label for="footerText">Texto do rodapé</label>
+          <textarea id="footerText" placeholder="Ex.: © 2026 • Todos os direitos reservados"></textarea>
+        </div>
+        <div class="field">
+          <label for="webAppUrl">URL do Web App Script</label>
+          <input id="webAppUrl" type="url" placeholder="Cole aqui a URL do Web App do Google Apps Script" />
+          <div class="hint">A URL fica gravada neste navegador e só muda se você remover ou salvar outra URL.</div>
+          <div class="connection-box" aria-live="polite">
+            <div id="webAppConnectionStatus" class="connection-status">
+              <strong>URL não salva</strong>
+              <span>Cole a URL e clique em Salvar Configuração.</span>
+            </div>
+            <div id="webAppUrlResumo" class="url-chip"></div>
+            <div class="connection-actions">
+              <button class="test-connection" type="button" id="removeWebAppUrlBtn">Remover URL</button>
+            </div>
+          </div>
+        </div>
+        <div id="status" class="status"></div>
+        <div class="actions">
+          <button class="preview-btn" type="button" id="previewBtn">Pré-visualizar</button>
+          <button class="save" type="submit">Salvar Configuração</button>
+          <button class="clear" type="button" id="clearBtn">Limpar Tudo</button>
+        </div>
+      </form>
+    </section>
+
+
+
+    <section class="panel user-panel">
+      <div class="panel-title">Gerenciar Usuários</div>
+      <div class="user-grid">
+        <div class="field">
+          <label for="userName">Nome</label>
+          <input id="userName" type="text" placeholder="Nome completo" />
+        </div>
+        <div class="field">
+          <label for="userLogin">Login</label>
+          <input id="userLogin" type="text" placeholder="Ex.: marco" />
+        </div>
+        <div class="field">
+          <label for="userPassword">Senha</label>
+          <input id="userPassword" type="password" placeholder="Senha de acesso (em branco mantém a atual na edição)" />
+        </div>
+        <div class="field">
+          <label for="userProfile">Perfil</label>
+          <select id="userProfile">
+            <option value="USUARIO">USUARIO</option>
+            <option value="ADMIN">ADMIN</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="userStatus">Status</label>
+          <select id="userStatus">
+            <option value="ATIVO">ATIVO</option>
+            <option value="INATIVO">INATIVO</option>
+          </select>
+        </div>
+      </div>
+      <div class="user-actions">
+        <button class="save" type="button" id="saveUserBtn">Cadastrar / Atualizar Usuário</button>
+        <button class="preview-btn" type="button" id="listUsersBtn" style="display:none">Atualizar Lista</button>
+        <button class="clear" type="button" id="clearUserBtn">Limpar Campos</button>
+      </div>
+      <div id="usersList" class="user-list">
+        <div class="empty-users">A lista será atualizada automaticamente ao abrir esta tela.</div>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <div class="panel-title">Prévia</div>
+      <div class="preview">
+        <div id="previewCard" class="preview-card">
+          <div class="preview-inner">
+            <img id="previewLogo" class="preview-logo" alt="Prévia da logo" />
+            <div id="previewPlaceholder" class="mini-logo">
+              <svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="white" stroke-width="1.8"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>
+            </div>
+            <div class="preview-system">Sistema</div>
+            <div class="preview-welcome">Bem-vindo</div>
+            <div id="previewName" class="preview-name">Sistema</div>
+            <div id="previewSlogan" class="preview-slogan">Gestão e monitoramento de obras em um só lugar</div>
+            <div class="line"></div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    (function(){
+      const STORAGE_KEY = 'appConfigSistema';
+      const LEGACY_KEY = 'configEmpresaSistema';
+      const WEB_APP_URL_PADRAO = 'https://script.google.com/macros/s/AKfycbyh8-Eq83C4Ri_-fH98_X-T8F153Yski4YRmjJ3Vtuglyk7DFb8s3GLIAwpXQCB9wVe7Q/exec';
+      let logoData = '';
+      let bgData = '';
+
+      function qs(id){ return document.getElementById(id); }
+      function status(msg){ const el = qs('status'); el.textContent = msg; el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 3500); }
+      function texto(valor, padrao){ return typeof valor === 'string' && valor.trim() ? valor.trim() : padrao; }
+
+      function possuiUrlConfigurada(config){
+        return Boolean(config && (config.webAppUrl || config.appScriptUrl || config.credenciaisUrl));
+      }
+
+      function aplicarUrlPadraoSeNecessario(config){
+        const finalConfig = config && typeof config === 'object' ? config : {};
+
+        if (!possuiUrlConfigurada(finalConfig) && finalConfig.urlPadraoRemovida !== true) {
+          finalConfig.webAppUrl = WEB_APP_URL_PADRAO;
+          finalConfig.appScriptUrl = WEB_APP_URL_PADRAO;
+          finalConfig.credenciaisUrl = WEB_APP_URL_PADRAO;
+          try { salvar(finalConfig); } catch (erro) {}
+        }
+
+        return finalConfig;
+      }
+
+      function ler(){
+        try {
+          const salvo = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_KEY);
+          const config = salvo ? JSON.parse(salvo) : {};
+          return aplicarUrlPadraoSeNecessario(config);
+        } catch (erro) {
+          return aplicarUrlPadraoSeNecessario({});
+        }
+      }
+
+      function salvar(config){
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+        localStorage.setItem(LEGACY_KEY, JSON.stringify({
+          logoNome: config.companyName,
+          subtitulo: config.slogan,
+          logoData: config.logoData,
+          bgData: config.bgData,
+          fundoData: config.bgData,
+          backgroundData: config.bgData,
+          imagemFundo: config.bgData,
+          imagemFundoData: config.bgData,
+          backgroundImage: config.bgData,
+          fundoImagem: config.bgData,
+          textoRodape: config.footerText,
+          webAppUrl: config.webAppUrl,
+          appScriptUrl: config.webAppUrl,
+          credenciaisUrl: config.webAppUrl
+        }));
+      }
+
+      function reduzirImagem(arquivo, max){
+        return new Promise((resolve,reject) => {
+          const reader = new FileReader();
+          reader.onerror = reject;
+          reader.onload = () => {
+            const img = new Image();
+            img.onerror = reject;
+            img.onload = () => {
+              const escala = Math.min(1, max / Math.max(img.width, img.height));
+              const canvas = document.createElement('canvas');
+              canvas.width = Math.max(1, Math.round(img.width * escala));
+              canvas.height = Math.max(1, Math.round(img.height * escala));
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+              const tipo = max >= 1000 ? 'image/jpeg' : 'image/png';
+              const qualidade = max >= 1000 ? 0.78 : 0.92;
+              resolve(canvas.toDataURL(tipo, qualidade));
+            };
+            img.src = reader.result;
+          };
+          reader.readAsDataURL(arquivo);
+        });
+      }
+
+      function obter(){
+        return {
+          companyName: qs('companyName').value.trim(),
+          slogan: qs('slogan').value.trim(),
+          logoData: logoData,
+          bgData: bgData,
+          footerText: qs('footerText').value.trim(),
+          webAppUrl: qs('webAppUrl').value.trim()
+        };
+      }
+
+      function preencher(config){
+        qs('companyName').value = config.companyName || config.logoNome || '';
+        qs('slogan').value = config.slogan || config.subtitulo || '';
+        qs('footerText').value = config.footerText || config.textoRodape || '';
+        qs('webAppUrl').value = config.webAppUrl || config.appScriptUrl || config.credenciaisUrl || '';
+        logoData = config.logoData || '';
+        bgData = config.bgData || config.fundoData || config.backgroundData || config.imagemFundo || config.imagemFundoData || config.backgroundImage || config.fundoImagem || '';
+        aplicarPrevia(obter());
+        atualizarIndicadorConexao(config.webAppUrl || config.appScriptUrl || config.credenciaisUrl ? 'ok' : '', config.webAppUrl || config.appScriptUrl || config.credenciaisUrl ? 'URL salva' : 'URL não salva', config.webAppUrl || config.appScriptUrl || config.credenciaisUrl ? 'Conexão configurada no sistema.' : 'Cole a URL e clique em Salvar Configuração.');
+      }
+
+      function aplicarPrevia(config){
+        const nome = texto(config.companyName, 'Sistema');
+        const slogan = texto(config.slogan, 'Gestão e monitoramento de obras em um só lugar');
+        qs('previewName').textContent = nome;
+        qs('previewSlogan').textContent = slogan;
+
+        if (config.logoData) {
+          qs('previewLogo').src = config.logoData;
+          qs('previewLogo').style.display = 'block';
+          qs('previewPlaceholder').style.display = 'none';
+        } else {
+          qs('previewLogo').removeAttribute('src');
+          qs('previewLogo').style.display = 'none';
+          qs('previewPlaceholder').style.display = 'grid';
+        }
+
+        if (config.bgData) {
+          qs('previewCard').style.backgroundImage = "linear-gradient(180deg,rgba(0,7,13,.30),rgba(0,7,13,.72)),url(" + JSON.stringify(config.bgData) + ")";
+        } else {
+          qs('previewCard').style.backgroundImage = "linear-gradient(180deg,rgba(0,7,13,.58),rgba(0,7,13,.92)),url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=80')";
+        }
+      }
+
+
+
+      function obterWebAppUrl(){
+        const configTela = obter();
+        if (configTela.webAppUrl) return configTela.webAppUrl.trim();
+
+        const configSalva = ler();
+        if (configSalva.urlPadraoRemovida === true) return '';
+
+        return primeiroValor(
+          configSalva.webAppUrl,
+          configSalva.appScriptUrl,
+          configSalva.credenciaisUrl,
+          WEB_APP_URL_PADRAO
+        );
+      }
+
+      function resumirUrl(url){
+        if (!url) return '';
+        if (url.length <= 80) return url;
+        return url.slice(0, 48) + '...' + url.slice(-18);
+      }
+
+      function atualizarIndicadorConexao(tipo, titulo, detalhe){
+        const box = qs('webAppConnectionStatus');
+        const resumo = qs('webAppUrlResumo');
+        if (!box) return;
+        box.className = 'connection-status' + (tipo ? ' ' + tipo : '');
+        box.innerHTML = '<strong>' + escaparHtml(titulo || '') + '</strong><span>' + escaparHtml(detalhe || '') + '</span>';
+        if (resumo) {
+          const url = obterWebAppUrl();
+          resumo.textContent = url ? 'URL salva: ' + resumirUrl(url) : '';
+        }
+      }
+
+      async function testarConexaoWebApp(opcoes){
+        const url = obterWebAppUrl();
+        if (!url) {
+          atualizarIndicadorConexao('erro', 'URL não salva', 'Cole a URL e clique em Salvar Configuração.');
+          return false;
+        }
+        atualizarIndicadorConexao('ok', 'URL salva', 'Conexão configurada no sistema.');
+        return true;
+      }
+
+      function removerUrlWebApp(){
+        const config = ler();
+        config.webAppUrl = '';
+        config.appScriptUrl = '';
+        config.credenciaisUrl = '';
+        config.urlPadraoRemovida = true;
+        qs('webAppUrl').value = '';
+        salvar(config);
+        atualizarIndicadorConexao('erro', 'URL removida', 'Cole uma nova URL e salve para ativar o sistema.');
+        mostrarMensagemUsuarios('URL removida. Salve uma nova URL para carregar os usuários.');
+        status('URL removida.');
+      }
+
+      async function chamarWebApp(action, payload){
+        const url = obterWebAppUrl();
+        if (!url) throw new Error('Informe e salve a URL do Web App Script antes de gerenciar usuários.');
+
+        const resposta = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(Object.assign({ action: action }, payload || {}))
+        });
+
+        const textoResposta = await resposta.text();
+        try { return JSON.parse(textoResposta); }
+        catch (erro) { throw new Error('Resposta inválida do Web App Script.'); }
+      }
+
+      function limparCamposUsuario(){
+        qs('userName').value = '';
+        qs('userLogin').value = '';
+        qs('userPassword').value = '';
+        qs('userProfile').value = 'USUARIO';
+        qs('userStatus').value = 'ATIVO';
+      }
+
+      function preencherUsuario(usuario){
+        qs('userName').value = usuario.nome || '';
+        qs('userLogin').value = usuario.login || '';
+        qs('userPassword').value = '';
+        qs('userProfile').value = String(usuario.perfil || 'USUARIO').toUpperCase() === 'ADMIN' ? 'ADMIN' : 'USUARIO';
+        qs('userStatus').value = String(usuario.status || 'ATIVO').toUpperCase() === 'ATIVO' ? 'ATIVO' : 'INATIVO';
+        status('Usuário carregado para edição. Deixe a senha em branco para manter a atual ou preencha para trocar.');
+      }
+
+      function classePerfil(perfil){ return String(perfil || '').toUpperCase() === 'ADMIN' ? 'admin' : 'usuario'; }
+      function classeStatus(st){ return String(st || '').toUpperCase() === 'ATIVO' ? 'ativo' : 'inativo'; }
+
+      function renderizarUsuarios(usuarios){
+        const lista = qs('usersList');
+        lista.innerHTML = '';
+
+        if (!usuarios || !usuarios.length) {
+          lista.innerHTML = '<div class="empty-users">Nenhum usuário cadastrado.</div>';
+          return;
+        }
+
+        usuarios.forEach(function(usuario){
+          const card = document.createElement('div');
+          card.className = 'user-card';
+
+          const perfil = String(usuario.perfil || 'USUARIO').toUpperCase();
+          const st = String(usuario.status || '').toUpperCase() || 'INATIVO';
+
+          card.innerHTML =
+            '<div><strong>' + escaparHtml(usuario.nome || '-') + '</strong><br><span>' + escaparHtml(usuario.login || '-') + '</span></div>' +
+            '<div><span>Login</span><br><strong>' + escaparHtml(usuario.login || '-') + '</strong></div>' +
+            '<div><span class="pill ' + classePerfil(perfil) + '">' + escaparHtml(perfil) + '</span></div>' +
+            '<div><span class="pill ' + classeStatus(st) + '">' + escaparHtml(st) + '</span></div>' +
+            '<div class="user-card-actions">' +
+              '<button class="small-btn edit" type="button">Editar</button>' +
+              '<button class="small-btn toggle" type="button">' + (st === 'ATIVO' ? 'Inativar' : 'Ativar') + '</button>' +
+              '<button class="small-btn danger" type="button">Excluir</button>' +
+            '</div>';
+
+          const botoes = card.querySelectorAll('button');
+          botoes[0].addEventListener('click', function(){ preencherUsuario(usuario); });
+          botoes[1].addEventListener('click', function(){ alterarStatusUsuario(usuario.login, st === 'ATIVO' ? 'INATIVO' : 'ATIVO'); });
+          botoes[2].addEventListener('click', function(){ excluirUsuario(usuario.login); });
+
+          lista.appendChild(card);
+        });
+      }
+
+      function escaparHtml(valor){
+        return String(valor || '').replace(/[&<>"]/g, function(c){
+          return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]);
+        });
+      }
+
+      function mostrarMensagemUsuarios(mensagem){
+        qs('usersList').innerHTML = '<div class="empty-users">' + escaparHtml(mensagem) + '</div>';
+      }
+
+      async function listarUsuarios(opcoes){
+        const modoSilencioso = opcoes && opcoes.silencioso === true;
+
+        try {
+          if (!modoSilencioso) mostrarMensagemUsuarios('Atualizando lista de usuários...');
+          const retorno = await chamarWebApp('listarUsuarios', {});
+          if (retorno.status !== 'ok') throw new Error(retorno.mensagem || 'Não foi possível listar usuários.');
+          renderizarUsuarios(retorno.usuarios || []);
+          if (!modoSilencioso) status('Lista de usuários atualizada.');
+        } catch (erro) {
+          mostrarMensagemUsuarios(erro.message || 'Erro ao listar usuários.');
+          if (!modoSilencioso) status(erro.message || 'Erro ao listar usuários.');
+        }
+      }
+
+      async function salvarUsuario(){
+        const payload = {
+          login: qs('userLogin').value.trim(),
+          senha: qs('userPassword').value.trim(),
+          nome: qs('userName').value.trim(),
+          perfil: qs('userProfile').value,
+          status: qs('userStatus').value
+        };
+
+        if (!payload.login || !payload.nome) {
+          status('Preencha nome e login. Para novo usuário, informe também a senha.');
+          return;
+        }
+
+        try {
+          const retorno = await chamarWebApp('salvarUsuario', payload);
+          if (retorno.status !== 'ok') throw new Error(retorno.mensagem || 'Não foi possível salvar usuário.');
+          status(retorno.mensagem || 'Usuário salvo com sucesso.');
+          limparCamposUsuario();
+          listarUsuarios();
+        } catch (erro) {
+          status(erro.message || 'Erro ao salvar usuário.');
+        }
+      }
+
+      async function excluirUsuario(login){
+        if (!confirm('Deseja excluir o usuário "' + login + '"?')) return;
+        try {
+          const retorno = await chamarWebApp('excluirUsuario', { login: login });
+          if (retorno.status !== 'ok') throw new Error(retorno.mensagem || 'Não foi possível excluir usuário.');
+          status(retorno.mensagem || 'Usuário excluído.');
+          listarUsuarios();
+        } catch (erro) {
+          status(erro.message || 'Erro ao excluir usuário.');
+        }
+      }
+
+      async function alterarStatusUsuario(login, novoStatus){
+        try {
+          const retorno = await chamarWebApp('alterarStatusUsuario', { login: login, status: novoStatus });
+          if (retorno.status !== 'ok') throw new Error(retorno.mensagem || 'Não foi possível alterar status.');
+          status(retorno.mensagem || 'Status alterado.');
+          listarUsuarios();
+        } catch (erro) {
+          status(erro.message || 'Erro ao alterar status.');
+        }
+      }
+
+      qs('logoFile').addEventListener('change', async function(e){
+        const file = e.target.files[0];
+        if (!file) return;
+        try { logoData = await reduzirImagem(file, 520); aplicarPrevia(obter()); status('Logo carregada. Clique em Salvar Configuração.'); }
+        catch (erro) { status('Não foi possível carregar a logo.'); }
+      });
+
+      qs('bgFile').addEventListener('change', async function(e){
+        const file = e.target.files[0];
+        if (!file) return;
+        try { bgData = await reduzirImagem(file, 1400); aplicarPrevia(obter()); status('Imagem de fundo carregada. Clique em Salvar Configuração.'); }
+        catch (erro) { status('Não foi possível carregar a imagem de fundo.'); }
+      });
+
+      qs('removeLogo').addEventListener('click', function(){ logoData = ''; qs('logoFile').value = ''; aplicarPrevia(obter()); });
+      qs('removeBg').addEventListener('click', function(){ bgData = ''; qs('bgFile').value = ''; aplicarPrevia(obter()); });
+      qs('previewBtn').addEventListener('click', function(){ aplicarPrevia(obter()); });
+      qs('clearBtn').addEventListener('click', function(){
+        logoData = ''; bgData = '';
+        qs('logoFile').value = ''; qs('bgFile').value = '';
+        qs('companyName').value = ''; qs('slogan').value = ''; qs('footerText').value = ''; qs('webAppUrl').value = '';
+        localStorage.removeItem(STORAGE_KEY); localStorage.removeItem(LEGACY_KEY);
+        aplicarPrevia(obter()); atualizarIndicadorConexao('erro', 'Offline', 'Configuração limpa.'); status('Configuração limpa.');
+      });
+
+
+      qs('saveUserBtn').addEventListener('click', salvarUsuario);
+      qs('listUsersBtn').addEventListener('click', listarUsuarios);
+      qs('clearUserBtn').addEventListener('click', limparCamposUsuario);
+      qs('removeWebAppUrlBtn').addEventListener('click', removerUrlWebApp);
+      qs('webAppUrl').addEventListener('input', function(){
+        atualizarIndicadorConexao('testando', 'URL alterada', 'Clique em Salvar Configuração para gravar esta URL.');
+      });
+
+      qs('formConfig').addEventListener('submit', function(e){
+        e.preventDefault();
+        const config = obter();
+        try {
+          if (config.webAppUrl) {
+            config.urlPadraoRemovida = false;
+          }
+          salvar(config);
+          aplicarPrevia(config);
+          status('Configuração salva.');
+          atualizarIndicadorConexao(config.webAppUrl ? 'ok' : 'erro', config.webAppUrl ? 'URL salva' : 'URL não salva', config.webAppUrl ? 'Conexão configurada no sistema.' : 'Cole uma URL para ativar o sistema.');
+          if (config.webAppUrl) listarUsuarios({ silencioso: true });
+        }
+        catch (erro) { status('Não foi possível salvar. A imagem pode estar muito grande.'); }
+      });
+
+      preencher(ler());
+
+      if (obterWebAppUrl()) {
+        atualizarIndicadorConexao('ok', 'URL salva', 'Conexão configurada no sistema.');
+        setTimeout(function(){
+          listarUsuarios({ silencioso: true });
+        }, 300);
+      }
+    })();
+  </script>
+</body>
+</html>
