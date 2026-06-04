@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notificações | Integra</title>
+  <style>
+    :root{
+      --navy:#071a36;--navy2:#101b2b;--blue:#12479b;--blue2:#1d5bbc;--orange:#e87422;
+      --bg:#d6dce4;--panel:#eef1f5;--white:#fff;--border:#c9d1dc;--text:#12233f;--muted:#637189;
+      --danger:#cb3347;--success:#22633b;--warning:#b86b00;--shadow:0 8px 22px rgba(15,23,42,.08);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{min-height:100%;font-family:Inter,"Segoe UI",Arial,sans-serif;color:var(--text);background:var(--bg)}
+    button,input,textarea,select{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}
+    .app{display:flex;min-height:100vh}.sidebar{position:fixed;inset:0 auto 0 0;width:218px;padding:22px 14px;background:linear-gradient(180deg,#06152c,#09234a);color:#fff}.brand{display:flex;align-items:center;gap:10px;padding:0 8px 25px}.brand-icon{width:38px;height:38px;border:2px solid #2c75df;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px;color:#2c75df}.brand strong{display:block;font-size:15px}.brand small{display:block;font-size:9px;letter-spacing:2.3px;color:#c4d2e6}.nav-link{display:flex;align-items:center;gap:10px;padding:12px;border-radius:7px;background:var(--blue2);font-size:13px;font-weight:750;color:#fff}.nav-link:hover{background:#154b9f}
+    .main{margin-left:218px;width:calc(100% - 218px);padding:18px 22px 28px}.topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:16px;padding:18px 20px;background:#101b2b;color:#fff;border-radius:0 0 16px 16px;box-shadow:var(--shadow)}.topbar h1{margin:0 0 6px;font-size:27px;letter-spacing:-.5px}.breadcrumb{font-size:12px;color:#d7e4f7;font-weight:650}.user-chip{display:inline-flex;align-items:center;gap:8px;margin-top:8px;padding:7px 10px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.08);font-size:12px;color:#eef5ff}.top-actions{display:flex;flex-wrap:wrap;gap:8px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:41px;padding:0 14px;border:1px solid var(--border);border-radius:9px;background:#fff;color:var(--text);font-size:13px;font-weight:800}.btn:hover{background:#edf4ff}.btn-primary{background:var(--blue);color:#fff;border-color:var(--blue)}.btn-primary:hover{background:#0e397f}.btn-orange{background:var(--orange);border-color:var(--orange);color:#fff}.btn-danger{color:var(--danger);border-color:#f0cbd1}.btn-small{min-height:34px;padding:0 10px;font-size:12px}.btn:disabled{opacity:.65;cursor:not-allowed}
+    .mobile-header{display:none}.workspace{display:grid;grid-template-columns:minmax(420px,44%) minmax(520px,56%);gap:16px;align-items:start}.panel{margin-bottom:14px;padding:16px;background:var(--panel);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow)}.panel-title{display:flex;align-items:center;gap:8px;margin:0 0 14px;color:#063f91;font-size:13px;font-weight:900;letter-spacing:.03em;text-transform:uppercase}.section-number{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:7px;background:#101b2b;color:#fff;font-size:12px;font-weight:900}.hint{margin:-5px 0 12px;color:#5d6d84;font-size:12px;line-height:1.45}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field.full{grid-column:1 / -1}.form-label{display:block;margin-bottom:6px;color:#2d4772;font-size:11px;font-weight:800}.required{color:var(--orange)}input[type="text"],textarea,select{display:block;width:100%;padding:10px 11px;border:1px solid #cfd9e7;border-radius:10px;background:#fff;color:var(--text);font-size:13px;outline:none}textarea{min-height:86px;line-height:1.4;resize:vertical}input:focus,textarea:focus,select:focus{border-color:var(--blue2);box-shadow:0 0 0 2px rgba(29,91,188,.11)}
+    .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}.tab-btn{min-height:46px;border:1px solid #c7d1df;border-radius:12px;background:#fff;color:#304a70;font-weight:900;font-size:13px}.tab-btn.active{background:#101b2b;color:#fff;border-color:#101b2b}.tab-panel{display:none}.tab-panel.active{display:block}.recipient-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.recipient-card{display:flex;align-items:center;gap:8px;min-height:43px;padding:9px 10px;border:1px solid #d4deec;border-radius:10px;background:#fff;color:#203657;font-size:12px;font-weight:750;cursor:pointer}.recipient-card input{width:16px;height:16px;accent-color:var(--blue)}.select-all-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}.priority-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.priority-option{position:relative}.priority-option input{position:absolute;opacity:0}.priority-option span{display:flex;align-items:center;justify-content:center;min-height:42px;border:1px solid #d4deec;border-radius:10px;background:#fff;color:#203657;font-size:12px;font-weight:900}.priority-option input:checked + span{background:#101b2b;color:#fff;border-color:#101b2b}.photo-actions{display:grid;grid-template-columns:1fr 1fr auto;gap:8px}.photo-upload{display:flex;align-items:center;justify-content:center;min-height:50px;border:1px dashed #aebbd0;border-radius:11px;background:#fff;color:#405872;font-size:12px;font-weight:850;cursor:pointer;text-align:center}.photo-upload:hover{background:#f7fbff;border-color:var(--blue2)}.photo-upload input{display:none}.photos-preview{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.photo-thumb{position:relative;min-height:88px;border:1px solid #d9e2ee;border-radius:10px;background:#fff;overflow:hidden}.photo-thumb img{width:100%;height:88px;object-fit:cover;display:block}.photo-thumb button{position:absolute;right:5px;top:5px;width:25px;height:25px;border:0;border-radius:999px;background:rgba(203,51,71,.92);color:#fff;font-weight:900}.photo-caption-name{padding:5px 6px;color:#53667f;font-size:10px;font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.empty{padding:18px;text-align:center;color:#697a91;font-size:12px;background:#fff;border:1px dashed #c8d2df;border-radius:12px}.status-msg{display:none;margin-bottom:12px;padding:11px 13px;border:1px solid #cadefa;border-radius:10px;background:#eef6ff;color:#29456f;font-size:12px;line-height:1.45}.status-msg.visible{display:block}.status-msg.ok{border-color:#c8e4d2;background:#effbf4;color:var(--success)}.status-msg.error{border-color:#efc6cd;background:#fff1f3;color:#8f2333}
+    .notif-list{display:flex;flex-direction:column;gap:10px}.notif-card{padding:13px;border:1px solid #d4deec;border-radius:14px;background:#fff}.notif-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.notif-title{font-size:14px;font-weight:900;color:#172942}.notif-meta{margin-top:5px;color:#5d6c81;font-size:11px;line-height:1.45}.badge-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.badge{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:999px;font-size:10.5px;font-weight:900;border:1px solid transparent}.badge.pendente{background:#fff3d7;color:#8a5200;border-color:#ffd993}.badge.resolvido{background:#eaf8ef;color:#1d6537;border-color:#bfe5cc}.badge.alta,.badge.urgente{background:#fff1f3;color:#9a2436;border-color:#f0cbd1}.badge.media{background:#eef6ff;color:#12479b;border-color:#cadefa}.badge.baixa{background:#effbf4;color:#27633c;border-color:#c8e4d2}.notif-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}.detail-box{display:none;margin-top:12px;padding:12px;border:1px solid #e0e7f1;border-radius:12px;background:#f7faff}.detail-box.open{display:block}.detail-text{color:#354a64;font-size:12px;line-height:1.5;white-space:pre-wrap}.detail-photos{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}.detail-photos img{width:100%;height:82px;object-fit:cover;border-radius:9px;border:1px solid #d7e0ec}.resolve-box{display:none;margin-top:12px;padding:12px;border:1px solid #d9e4ef;border-radius:12px;background:#fff}.resolve-box.open{display:block}.dashboard-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}.dash-card{padding:14px;border-radius:14px;background:#fff;border:1px solid #d4deec}.dash-card b{display:block;font-size:22px;color:#101b2b}.dash-card span{display:block;margin-top:4px;color:#65748a;font-size:11px;font-weight:800;text-transform:uppercase}.integration-note{padding:12px;border:1px dashed #aebbd0;border-radius:12px;background:#f9fbff;color:#465a73;font-size:12px;line-height:1.5}.bottom-actions{display:none}.mobile-only-input{display:none!important}
+    @media(max-width:1150px){.sidebar{width:68px;padding:17px 8px}.brand div:last-child,.nav-link span{display:none}.brand{justify-content:center;padding:0 0 20px}.main{margin-left:68px;width:calc(100% - 68px)}.workspace{grid-template-columns:1fr}.preview-column{display:block}}
+    @media(max-width:900px){body{padding-bottom:92px}.sidebar,.topbar{display:none}.main{margin:0;width:100%;padding:10px}.mobile-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;padding:14px;background:#101b2b;color:#fff;border-radius:14px;box-shadow:var(--shadow)}.mobile-header strong{display:block;font-size:16px}.mobile-header small{display:block;margin-top:2px;color:#cbd5e1;font-size:10px}.workspace{display:block}.panel{padding:14px;border-radius:16px}.fields{grid-template-columns:1fr}.priority-row{grid-template-columns:repeat(2,1fr)}.recipient-grid{grid-template-columns:1fr}.photo-actions{grid-template-columns:1fr}.photos-preview,.detail-photos{grid-template-columns:repeat(2,1fr)}.dashboard-grid{grid-template-columns:1fr 1fr}.tabs{position:sticky;top:0;z-index:20;background:var(--bg);padding:0 0 8px}.bottom-actions{position:fixed;left:0;right:0;bottom:0;z-index:9999;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:8px 8px calc(8px + env(safe-area-inset-bottom));border-top:1px solid #cbd7e8;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);box-shadow:0 -8px 20px rgba(7,26,54,.16)}.bottom-actions .btn{width:100%;min-height:52px;height:auto;padding:6px 4px;border-radius:11px;font-size:11px;line-height:1.1;flex-direction:column;gap:3px;text-align:center}.bottom-actions .btn span{display:block;font-size:18px;line-height:1}.bottom-actions .btn small{display:block;font-size:10px;font-weight:900}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-icon">🔔</div><div><strong>NOTIFICAÇÕES</strong><small>INTEGRA</small></div></div>
+    <a class="nav-link" href="index_documentos.html">← <span>Voltar para Documentos</span></a>
+  </aside>
+  <main class="main">
+    <header class="mobile-header"><div><strong>Notificações</strong><small>Integra Gestão de Campo</small></div><a class="btn" href="index_documentos.html">← Documentos</a></header>
+    <header class="topbar">
+      <div>
+        <h1>Notificações</h1>
+        <div class="breadcrumb">Documentos › Notificações</div>
+        <div class="user-chip">👤 Usuário logado: <b id="loggedUserTop">Marco Antônio</b></div>
+      </div>
+      <div class="top-actions">
+        <a class="btn" href="../../index.html">← Menu Principal</a>
+        <a class="btn" href="index_documentos.html">← Documentos</a>
+        <button class="btn btn-orange" type="button" onclick="setTab('nova')">+ Nova Notificação</button>
+      </div>
+    </header>
+
+    <div class="status-msg" id="statusBox"></div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab-btn active" type="button" data-tab="nova" onclick="setTab('nova')">➕ Nova</button>
+      <button class="tab-btn" type="button" data-tab="recebidas" onclick="setTab('recebidas')">📥 Recebidas</button>
+      <button class="tab-btn" type="button" data-tab="enviadas" onclick="setTab('enviadas')">📤 Enviadas</button>
+    </div>
+
+    <section class="tab-panel active" id="tab-nova">
+      <div class="workspace">
+        <div class="editor-column">
+          <section class="panel">
+            <h2 class="panel-title"><span class="section-number">1</span> Criar notificação</h2>
+            <p class="hint">Primeira versão visual. Depois vamos ligar esta tela ao configuração.html, Apps Script, Planilha e Drive.</p>
+            <div class="fields">
+              <div class="field full"><label class="form-label">Título da Notificação <span class="required">*</span></label><input type="text" id="notifyTitle" placeholder="Ex.: Lixo acumulado no setor A"></div>
+              <div class="field full"><label class="form-label">Mensagem / Descrição <span class="required">*</span></label><textarea id="notifyMessage" placeholder="Descreva o problema, orientação ou comunicado..."></textarea></div>
+              <div class="field full"><label class="form-label">Prioridade</label><div class="priority-row">
+                <label class="priority-option"><input type="radio" name="priority" value="Baixa"><span>Baixa</span></label>
+                <label class="priority-option"><input type="radio" name="priority" value="Média" checked><span>Média</span></label>
+                <label class="priority-option"><input type="radio" name="priority" value="Alta"><span>Alta</span></label>
+                <label class="priority-option"><input type="radio" name="priority" value="Urgente"><span>Urgente</span></label>
+              </div></div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2 class="panel-title"><span class="section-number">2</span> Destinatários</h2>
+            <div class="select-all-row"><button class="btn btn-small" type="button" onclick="selectAllUsers(true)">Selecionar todos</button><button class="btn btn-small" type="button" onclick="selectAllUsers(false)">Limpar seleção</button></div>
+            <div class="recipient-grid" id="recipientGrid"></div>
+          </section>
+        </div>
+
+        <div class="preview-column">
+          <section class="panel">
+            <h2 class="panel-title"><span class="section-number">3</span> Fotos da ocorrência</h2>
+            <div class="photo-actions">
+              <label class="photo-upload" for="cameraInput">📷 Tirar foto</label>
+              <label class="photo-upload" for="galleryInput">🖼 Selecionar fotos</label>
+              <button class="btn btn-danger" type="button" onclick="clearDraftPhotos()">🗑 Limpar</button>
+              <input class="mobile-only-input" id="cameraInput" type="file" accept="image/*" capture="environment" onchange="addDraftPhotos(this.files);this.value=''">
+              <input class="mobile-only-input" id="galleryInput" type="file" accept="image/*" multiple onchange="addDraftPhotos(this.files);this.value=''">
+            </div>
+            <div class="photos-preview" id="draftPhotosPreview"></div>
+          </section>
+
+          <section class="panel">
+            <h2 class="panel-title"><span class="section-number">4</span> Finalizar envio</h2>
+            <p class="hint">Ao integrar com Drive, as fotos serão salvas como: <b>Título_01</b>, <b>Título_02</b>, <b>Título_03</b>.</p>
+            <button class="btn btn-primary" style="width:100%;min-height:52px" type="button" onclick="sendNotification()">📨 Enviar Notificação</button>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="tab-recebidas">
+      <section class="panel">
+        <h2 class="panel-title"><span class="section-number">1</span> Minhas notificações recebidas</h2>
+        <div class="dashboard-grid"><div class="dash-card"><b id="dashReceivedPending">0</b><span>Pendentes</span></div><div class="dash-card"><b id="dashReceivedDone">0</b><span>Resolvidas</span></div><div class="dash-card"><b id="dashReceivedTotal">0</b><span>Total</span></div></div>
+        <div class="notif-list" id="receivedList"></div>
+      </section>
+    </section>
+
+    <section class="tab-panel" id="tab-enviadas">
+      <section class="panel">
+        <h2 class="panel-title"><span class="section-number">1</span> Notificações enviadas por mim</h2>
+        <div class="dashboard-grid"><div class="dash-card"><b id="dashSentPending">0</b><span>Pendentes</span></div><div class="dash-card"><b id="dashSentDone">0</b><span>Resolvidas</span></div><div class="dash-card"><b id="dashSentTotal">0</b><span>Total</span></div></div>
+        <div class="notif-list" id="sentList"></div>
+      </section>
+      <section class="panel"><div class="integration-note"><b>Próxima etapa:</b> este histórico será gravado em uma planilha/aba por usuário. As imagens ficarão no Google Drive e a planilha guardará os links, status, emissor, destinatário, prioridade e resposta.</div></section>
+    </section>
+  </main>
+</div>
+
+<nav class="bottom-actions" aria-label="Ações rápidas">
+  <button class="btn" type="button" onclick="setTab('nova')"><span>➕</span><small>Nova</small></button>
+  <button class="btn" type="button" onclick="setTab('recebidas')"><span>📥</span><small>Recebidas</small></button>
+  <button class="btn" type="button" onclick="setTab('enviadas')"><span>📤</span><small>Enviadas</small></button>
+  <a class="btn" href="index_documentos.html"><span>↩</span><small>Voltar</small></a>
+</nav>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const safe = value => String(value || '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+  const STORAGE_KEY = 'integra_notificacoes_demo_v1';
+
+  const state = {
+    loggedUser: 'Marco Antônio',
+    users: ['Marco Antônio','João Silva','Maria Souza','Carlos Lima','Eng. Paula','Mestre Antônio'],
+    draftPhotos: [],
+    notifications: []
+  };
+
+  function showStatus(message,type=''){
+    const box = $('statusBox');
+    box.className = 'status-msg visible ' + type;
+    box.textContent = message;
+    setTimeout(() => { box.className = 'status-msg'; }, 3600);
+  }
+
+  function setTab(tab){
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
+    document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.toggle('active', panel.id === 'tab-' + tab));
+    renderLists();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function loadState(){
+    try{
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      if(Array.isArray(saved.notifications)) state.notifications = saved.notifications;
+      if(saved.loggedUser) state.loggedUser = saved.loggedUser;
+      if(Array.isArray(saved.users) && saved.users.length) state.users = saved.users;
+    }catch(error){}
+  }
+  function saveState(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify({notifications:state.notifications,loggedUser:state.loggedUser,users:state.users})); }catch(error){}
+  }
+
+  function renderUsers(){
+    $('loggedUserTop').textContent = state.loggedUser;
+    $('recipientGrid').innerHTML = state.users.filter(name => name !== state.loggedUser).map(name => `
+      <label class="recipient-card"><input type="checkbox" class="recipient-check" value="${safe(name)}"> ${safe(name)}</label>
+    `).join('');
+  }
+  function selectAllUsers(value){ document.querySelectorAll('.recipient-check').forEach(input => input.checked = value); }
+
+  function optimizeImage(file,maxSide=1400,quality=.86){
+    return new Promise((resolve,reject)=>{
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = event => {
+        const img = new Image();
+        img.onerror = reject;
+        img.onload = () => {
+          const ratio = Math.min(1,maxSide / Math.max(img.naturalWidth,img.naturalHeight));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(img.naturalWidth * ratio);
+          canvas.height = Math.round(img.naturalHeight * ratio);
+          canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+          resolve({id:uid(),src:canvas.toDataURL('image/jpeg',quality),name:file.name || 'foto.jpg'});
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  async function addDraftPhotos(files){
+    const valid = [...files].filter(file => file && file.type.startsWith('image/'));
+    for(const file of valid){
+      try{ state.draftPhotos.push(await optimizeImage(file)); }
+      catch(error){ showStatus('Uma foto não pôde ser carregada.','error'); }
+    }
+    renderDraftPhotos();
+  }
+  function removeDraftPhoto(id){ state.draftPhotos = state.draftPhotos.filter(photo => photo.id !== id); renderDraftPhotos(); }
+  function clearDraftPhotos(){ state.draftPhotos = []; renderDraftPhotos(); }
+  function renderDraftPhotos(){
+    $('draftPhotosPreview').innerHTML = state.draftPhotos.length ? state.draftPhotos.map((photo,index) => `
+      <div class="photo-thumb"><img src="${photo.src}" alt="Foto ${index+1}"><button type="button" onclick="removeDraftPhoto('${photo.id}')">×</button><div class="photo-caption-name">Foto ${String(index+1).padStart(2,'0')}</div></div>
+    `).join('') : '<div class="empty" style="grid-column:1 / -1">Nenhuma foto anexada ainda.</div>';
+  }
+
+  function priority(){ return document.querySelector('input[name="priority"]:checked')?.value || 'Média'; }
+  function selectedRecipients(){ return [...document.querySelectorAll('.recipient-check:checked')].map(input => input.value); }
+  function nowText(){ return new Date().toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}); }
+  function sendNotification(){
+    const title = $('notifyTitle').value.trim();
+    const message = $('notifyMessage').value.trim();
+    const recipients = selectedRecipients();
+    if(!title || !message){ showStatus('Preencha título e mensagem para enviar.','error'); return; }
+    if(!recipients.length){ showStatus('Selecione pelo menos um destinatário.','error'); return; }
+    const base = {
+      id: uid(), title, message, priority: priority(), sender: state.loggedUser, recipients,
+      status:'Pendente', createdAt: nowText(), photos: state.draftPhotos.map((p,i)=>({...p,driveName:`${title}_${String(i+1).padStart(2,'0')}.jpg`})),
+      solutionText:'', solutionPhotos:[], solvedAt:''
+    };
+    state.notifications.unshift(base);
+    saveState();
+    $('notifyTitle').value = ''; $('notifyMessage').value = ''; selectAllUsers(false); clearDraftPhotos();
+    showStatus('Notificação criada localmente. Depois vamos integrar com a planilha e Drive.','ok');
+    setTab('enviadas');
+  }
+
+  function statusBadge(status){ return status === 'Resolvido' ? 'resolvido' : 'pendente'; }
+  function prioClass(value){ return String(value || '').toLowerCase().replace('é','e'); }
+  function renderNotificationCard(item,mode){
+    const people = mode === 'sent' ? `Para: ${safe(item.recipients.join(', '))}` : `Enviado por: ${safe(item.sender)}`;
+    const photos = (item.photos || []).length;
+    const solutionPhotos = (item.solutionPhotos || []).length;
+    return `<article class="notif-card">
+      <div class="notif-head"><div><div class="notif-title">${safe(item.title)}</div><div class="notif-meta">${people}<br>Data: ${safe(item.createdAt)}</div></div><span class="badge ${statusBadge(item.status)}">${safe(item.status)}</span></div>
+      <div class="badge-row"><span class="badge ${prioClass(item.priority)}">Prioridade: ${safe(item.priority)}</span><span class="badge media">📷 ${photos} foto(s)</span>${solutionPhotos ? `<span class="badge resolvido">✅ ${solutionPhotos} foto(s) solução</span>` : ''}</div>
+      <div class="notif-actions"><button class="btn btn-small" type="button" onclick="toggleDetails('${item.id}')">👁 Ver detalhes</button>${mode === 'received' && item.status !== 'Resolvido' ? `<button class="btn btn-primary btn-small" type="button" onclick="toggleResolve('${item.id}')">✅ Resolver</button>` : ''}</div>
+      <div class="detail-box" id="details-${item.id}"><div class="detail-text"><b>Mensagem:</b>\n${safe(item.message)}</div>${photosHtml(item.photos)}${item.status === 'Resolvido' ? `<div class="detail-text" style="margin-top:10px"><b>Resposta:</b>\n${safe(item.solutionText || '—')}\n\nResolvido em: ${safe(item.solvedAt || '—')}</div>${photosHtml(item.solutionPhotos)}` : ''}</div>
+      ${mode === 'received' ? resolveBoxHtml(item) : ''}
+    </article>`;
+  }
+  function photosHtml(photos=[]){
+    if(!photos.length) return '<div class="empty" style="margin-top:10px">Sem fotos anexadas.</div>';
+    return `<div class="detail-photos">${photos.map(photo => `<img src="${photo.src}" alt="Foto">`).join('')}</div>`;
+  }
+  function resolveBoxHtml(item){
+    return `<div class="resolve-box" id="resolve-${item.id}">
+      <div class="field full"><label class="form-label">Resposta / solução executada</label><textarea id="solutionText-${item.id}" placeholder="Descreva o que foi feito para resolver..."></textarea></div>
+      <div class="photo-actions" style="margin-top:10px">
+        <label class="photo-upload" for="solutionCamera-${item.id}">📷 Tirar foto da solução</label>
+        <label class="photo-upload" for="solutionGallery-${item.id}">🖼 Galeria</label>
+        <button class="btn btn-primary" type="button" onclick="markResolved('${item.id}')">Enviar como resolvido</button>
+        <input class="mobile-only-input" id="solutionCamera-${item.id}" type="file" accept="image/*" capture="environment" onchange="addSolutionPhotos('${item.id}',this.files);this.value=''">
+        <input class="mobile-only-input" id="solutionGallery-${item.id}" type="file" accept="image/*" multiple onchange="addSolutionPhotos('${item.id}',this.files);this.value=''">
+      </div>
+      <div class="photos-preview" id="solutionPreview-${item.id}">${solutionPreviewHtml(item)}</div>
+    </div>`;
+  }
+  function solutionPreviewHtml(item){
+    return (item.solutionDraftPhotos || []).length ? item.solutionDraftPhotos.map((photo,index)=>`<div class="photo-thumb"><img src="${photo.src}" alt="Solução ${index+1}"><button type="button" onclick="removeSolutionDraftPhoto('${item.id}','${photo.id}')">×</button><div class="photo-caption-name">Solução ${String(index+1).padStart(2,'0')}</div></div>`).join('') : '<div class="empty" style="grid-column:1 / -1">Nenhuma foto de solução anexada.</div>';
+  }
+  function toggleDetails(id){ $('details-' + id)?.classList.toggle('open'); }
+  function toggleResolve(id){ $('resolve-' + id)?.classList.toggle('open'); }
+  async function addSolutionPhotos(id,files){
+    const item = state.notifications.find(n => n.id === id); if(!item) return;
+    if(!Array.isArray(item.solutionDraftPhotos)) item.solutionDraftPhotos = [];
+    for(const file of [...files].filter(file => file && file.type.startsWith('image/'))){
+      try{ item.solutionDraftPhotos.push(await optimizeImage(file)); }
+      catch(error){ showStatus('Uma foto da solução não pôde ser carregada.','error'); }
+    }
+    saveState(); renderLists(); const box = $('resolve-' + id); if(box) box.classList.add('open');
+  }
+  function removeSolutionDraftPhoto(id,photoId){
+    const item = state.notifications.find(n => n.id === id); if(!item) return;
+    item.solutionDraftPhotos = (item.solutionDraftPhotos || []).filter(p => p.id !== photoId); saveState(); renderLists(); const box = $('resolve-' + id); if(box) box.classList.add('open');
+  }
+  function markResolved(id){
+    const item = state.notifications.find(n => n.id === id); if(!item) return;
+    const text = $('solutionText-' + id)?.value.trim() || '';
+    if(!text && !(item.solutionDraftPhotos || []).length){ showStatus('Informe uma resposta ou anexe uma foto da solução.','error'); return; }
+    item.solutionText = text; item.solutionPhotos = (item.solutionDraftPhotos || []).map((p,i)=>({...p,driveName:`${item.title}_resolvido_${String(i+1).padStart(2,'0')}.jpg`})); item.solutionDraftPhotos = [];
+    item.status = 'Resolvido'; item.solvedAt = nowText(); saveState(); renderLists(); showStatus('Notificação marcada como resolvida. O emissor verá o retorno nas enviadas.','ok');
+  }
+
+  function renderLists(){
+    const received = state.notifications.filter(n => n.recipients.includes(state.loggedUser));
+    const sent = state.notifications.filter(n => n.sender === state.loggedUser);
+    $('receivedList').innerHTML = received.length ? received.map(item => renderNotificationCard(item,'received')).join('') : '<div class="empty">Nenhuma notificação recebida ainda.</div>';
+    $('sentList').innerHTML = sent.length ? sent.map(item => renderNotificationCard(item,'sent')).join('') : '<div class="empty">Nenhuma notificação enviada ainda.</div>';
+    $('dashReceivedPending').textContent = received.filter(n => n.status !== 'Resolvido').length;
+    $('dashReceivedDone').textContent = received.filter(n => n.status === 'Resolvido').length;
+    $('dashReceivedTotal').textContent = received.length;
+    $('dashSentPending').textContent = sent.filter(n => n.status !== 'Resolvido').length;
+    $('dashSentDone').textContent = sent.filter(n => n.status === 'Resolvido').length;
+    $('dashSentTotal').textContent = sent.length;
+  }
+
+  function seedDemo(){
+    if(state.notifications.length) return;
+    state.notifications.push({id:uid(),title:'Exemplo: material fora do local correto',message:'Favor verificar o armazenamento do material no setor B e registrar a correção com foto.',priority:'Alta',sender:'João Silva',recipients:[state.loggedUser],status:'Pendente',createdAt:nowText(),photos:[],solutionText:'',solutionPhotos:[],solvedAt:''});
+  }
+
+  loadState(); seedDemo(); renderUsers(); renderDraftPhotos(); renderLists(); saveState();
+</script>
+</body>
+</html>
