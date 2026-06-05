@@ -1,0 +1,2131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#061a3a" />
+  <title>Notificações | Integra</title>
+  <style>
+    :root{
+      --navy:#061a3a;
+      --navy2:#092a5a;
+      --blue:#064db5;
+      --blue2:#1265dd;
+      --orange:#e87422;
+      --bg:#f3f6fb;
+      --panel:#ffffff;
+      --soft:#f7f9fd;
+      --border:#dce4ef;
+      --border2:#cbd7e8;
+      --text:#101828;
+      --muted:#667085;
+      --muted2:#98a2b3;
+      --danger:#d92d20;
+      --success:#16803c;
+      --warning:#b86b00;
+      --shadow:0 10px 26px rgba(16,24,40,.08);
+      --shadow-soft:0 6px 16px rgba(16,24,40,.06);
+      --radius:22px;
+      --safe-bottom:env(safe-area-inset-bottom,0px);
+      --safe-top:env(safe-area-inset-top,0px);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    html{min-height:100%;background:var(--bg);scroll-behavior:smooth}
+    body{
+      min-height:100%;
+      font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 20% 0%,rgba(18,101,221,.10),transparent 26%),
+        linear-gradient(180deg,#eef4ff 0%,var(--bg) 230px,var(--bg) 100%);
+      padding-bottom:calc(86px + var(--safe-bottom));
+      overflow-x:hidden;
+    }
+
+    button,input,textarea,select{font:inherit}
+    button{cursor:pointer;border:0}
+    a{text-decoration:none;color:inherit}
+    img{max-width:100%}
+
+    .app{
+      width:100%;
+      min-height:100vh;
+    }
+
+    .sidebar{
+      display:none;
+    }
+
+    .main{
+      width:100%;
+      max-width:940px;
+      margin:0 auto;
+      padding:0 14px 22px;
+    }
+
+    .topbar{
+      display:none;
+    }
+
+    .mobile-header{
+      position:sticky;
+      top:0;
+      z-index:80;
+      margin:0 -14px 14px;
+      padding:calc(12px + var(--safe-top)) 18px 16px;
+      background:linear-gradient(135deg,#04152f,#07346c);
+      color:#fff;
+      box-shadow:0 10px 24px rgba(6,26,58,.22);
+    }
+
+    .mobile-header-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      min-height:54px;
+    }
+
+    .icon-button{
+      width:44px;
+      height:44px;
+      flex:0 0 44px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:16px;
+      background:rgba(255,255,255,.10);
+      color:#fff;
+      font-size:23px;
+      border:1px solid rgba(255,255,255,.12);
+    }
+
+    .header-title{
+      flex:1;
+      min-width:0;
+    }
+
+    .mobile-header strong{
+      display:block;
+      font-size:21px;
+      line-height:1.1;
+      letter-spacing:.2px;
+      font-weight:900;
+    }
+
+    .mobile-header small{
+      display:block;
+      margin-top:4px;
+      color:#d6e5ff;
+      font-size:12px;
+      font-weight:700;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .header-bell{
+      position:relative;
+    }
+
+    .counter-dot{
+      position:absolute;
+      right:2px;
+      top:1px;
+      min-width:20px;
+      height:20px;
+      padding:0 5px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:999px;
+      background:#e53945;
+      color:#fff;
+      font-size:11px;
+      font-weight:900;
+      border:2px solid #07346c;
+    }
+
+    .user-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      margin-top:8px;
+      padding:7px 10px;
+      border:1px solid rgba(255,255,255,.16);
+      border-radius:999px;
+      background:rgba(255,255,255,.09);
+      font-size:12px;
+      color:#eef5ff;
+      max-width:100%;
+    }
+
+    .status-msg{
+      display:none;
+      margin:10px 0 12px;
+      padding:12px 14px;
+      border:1px solid #cadefa;
+      border-radius:16px;
+      background:#eef6ff;
+      color:#29456f;
+      font-size:13px;
+      font-weight:700;
+      line-height:1.4;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .status-msg.visible{display:block}
+    .status-msg.ok{border-color:#bfe7cc;background:#effbf4;color:var(--success)}
+    .status-msg.error{border-color:#f5c2c0;background:#fff3f2;color:#9c2017}
+
+    .tabs{
+      position:sticky;
+      top:calc(82px + var(--safe-top));
+      z-index:70;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:9px;
+      margin:0 0 14px;
+      padding:8px 0 10px;
+      background:linear-gradient(180deg,rgba(243,246,251,.97),rgba(243,246,251,.90));
+      backdrop-filter:blur(12px);
+    }
+
+    .tab-btn{
+      position:relative;
+      min-height:58px;
+      padding:8px 6px;
+      border:1px solid var(--border);
+      border-radius:17px;
+      background:#fff;
+      color:#16243b;
+      font-weight:900;
+      font-size:12px;
+      box-shadow:var(--shadow-soft);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      text-transform:uppercase;
+      letter-spacing:.02em;
+    }
+
+    .tab-btn.active{
+      background:linear-gradient(135deg,var(--blue2),var(--blue));
+      color:#fff;
+      border-color:transparent;
+      box-shadow:0 12px 26px rgba(6,77,181,.24);
+    }
+
+    .tab-icon{
+      font-size:19px;
+      line-height:1;
+    }
+
+    .tab-count{
+      position:absolute;
+      top:-8px;
+      right:12px;
+      min-width:22px;
+      height:22px;
+      padding:0 6px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:999px;
+      background:#e53945;
+      color:#fff;
+      font-size:11px;
+      font-weight:900;
+      border:2px solid #fff;
+    }
+
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+
+    .workspace{
+      display:block;
+    }
+
+    .panel{
+      position:relative;
+      margin-bottom:14px;
+      padding:18px 16px;
+      background:rgba(255,255,255,.96);
+      border:1px solid rgba(220,228,239,.92);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .panel::before{
+      content:"";
+      position:absolute;
+      inset:0 0 auto;
+      height:1px;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);
+      pointer-events:none;
+    }
+
+    .panel-title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin:0 0 16px;
+      color:#101828;
+      font-size:16px;
+      font-weight:950;
+      letter-spacing:.025em;
+      text-transform:uppercase;
+    }
+
+    .section-number{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:32px;
+      height:32px;
+      flex:0 0 32px;
+      border-radius:999px;
+      background:var(--blue);
+      color:#fff;
+      font-size:14px;
+      font-weight:950;
+      box-shadow:0 8px 18px rgba(6,77,181,.22);
+    }
+
+    .hint{
+      margin:-5px 0 14px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    .fields{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+
+    .field.full{grid-column:1 / -1}
+
+    .form-label{
+      display:block;
+      margin-bottom:7px;
+      color:#1d2939;
+      font-size:13px;
+      font-weight:900;
+    }
+
+    .required{color:#e53945}
+
+    input[type="text"],textarea,select{
+      display:block;
+      width:100%;
+      min-height:52px;
+      padding:13px 15px;
+      border:1px solid var(--border2);
+      border-radius:15px;
+      background:#fff;
+      color:var(--text);
+      font-size:15px;
+      outline:none;
+      box-shadow:0 1px 0 rgba(16,24,40,.02);
+    }
+
+    textarea{
+      min-height:122px;
+      line-height:1.45;
+      resize:vertical;
+    }
+
+    input::placeholder,textarea::placeholder{color:#7b8798}
+
+    input:focus,textarea:focus,select:focus{
+      border-color:var(--blue2);
+      box-shadow:0 0 0 4px rgba(18,101,221,.12);
+    }
+
+    .textarea-wrap{
+      position:relative;
+    }
+
+    .char-counter{
+      position:absolute;
+      right:13px;
+      bottom:10px;
+      color:#7b8798;
+      font-size:12px;
+      font-weight:800;
+      pointer-events:none;
+    }
+
+    .priority-row{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:9px;
+    }
+
+    .priority-option{
+      position:relative;
+    }
+
+    .priority-option input{
+      position:absolute;
+      opacity:0;
+      pointer-events:none;
+    }
+
+    .priority-option span{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      min-height:54px;
+      padding:0 10px;
+      border:1px solid var(--border2);
+      border-radius:15px;
+      background:#fff;
+      color:#1d2939;
+      font-size:14px;
+      font-weight:900;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .priority-option span::before{
+      content:"";
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:var(--muted2);
+    }
+
+    .priority-option:nth-child(1) span::before{background:#16a34a}
+    .priority-option:nth-child(2) span::before{background:#2563eb}
+    .priority-option:nth-child(3) span::before{background:#f97316}
+    .priority-option:nth-child(4) span::before{background:#e11d48}
+
+    .priority-option input:checked + span{
+      border-color:var(--blue2);
+      background:#f4f8ff;
+      color:var(--blue);
+      box-shadow:0 0 0 3px rgba(18,101,221,.10);
+    }
+
+    .priority-option:nth-child(3) input:checked + span{
+      border-color:var(--orange);
+      color:var(--orange);
+      background:#fff8f2;
+      box-shadow:0 0 0 3px rgba(232,116,34,.10);
+    }
+
+    .priority-option:nth-child(4) input:checked + span{
+      border-color:#e11d48;
+      color:#be123c;
+      background:#fff1f3;
+      box-shadow:0 0 0 3px rgba(225,29,72,.10);
+    }
+
+    .recipient-tools{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .search-wrap{
+      position:relative;
+    }
+
+    .search-wrap input{
+      padding-right:46px;
+    }
+
+    .search-icon{
+      position:absolute;
+      right:15px;
+      top:50%;
+      transform:translateY(-50%);
+      color:#667085;
+      font-size:20px;
+      pointer-events:none;
+    }
+
+    .select-all-row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+    }
+
+    .recipient-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:9px;
+    }
+
+    .recipient-card{
+      display:flex;
+      align-items:center;
+      gap:11px;
+      min-height:54px;
+      padding:12px 14px;
+      border:1px solid var(--border);
+      border-radius:15px;
+      background:#fff;
+      color:#1d2939;
+      font-size:15px;
+      font-weight:900;
+      cursor:pointer;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .recipient-card:has(input:checked){
+      border-color:#b4cdf7;
+      background:#f1f7ff;
+      box-shadow:0 0 0 3px rgba(18,101,221,.08);
+    }
+
+    .recipient-card input{
+      width:22px;
+      height:22px;
+      flex:0 0 22px;
+      accent-color:var(--blue);
+    }
+
+    .photo-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .photo-upload{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      min-height:58px;
+      padding:10px;
+      border:1px solid transparent;
+      border-radius:16px;
+      background:#f1f4f9;
+      color:#344054;
+      font-size:13px;
+      font-weight:950;
+      cursor:pointer;
+      text-align:center;
+      text-transform:uppercase;
+      letter-spacing:.02em;
+    }
+
+    .photo-upload:hover,.photo-upload:active{
+      background:#eaf2ff;
+      color:var(--blue);
+    }
+
+    .photo-upload input{display:none}
+
+    .photos-preview{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+      margin-top:12px;
+    }
+
+    .photo-thumb{
+      position:relative;
+      min-height:112px;
+      border:1px solid var(--border);
+      border-radius:17px;
+      background:#fff;
+      overflow:hidden;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .photo-thumb img{
+      width:100%;
+      height:112px;
+      object-fit:cover;
+      display:block;
+    }
+
+    .photo-thumb button{
+      position:absolute;
+      right:7px;
+      top:7px;
+      width:32px;
+      height:32px;
+      border-radius:999px;
+      background:rgba(16,24,40,.84);
+      color:#fff;
+      font-weight:950;
+      font-size:20px;
+      line-height:1;
+    }
+
+    .photo-caption-name{
+      padding:7px 8px;
+      color:#53667f;
+      font-size:11px;
+      font-weight:850;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .add-photo-card{
+      min-height:112px;
+      border:1px dashed #c1ccdb;
+      border-radius:17px;
+      background:#fff;
+      color:#667085;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      font-weight:900;
+      line-height:1.35;
+    }
+
+    .empty{
+      padding:18px;
+      text-align:center;
+      color:#697a91;
+      font-size:13px;
+      font-weight:800;
+      background:#fff;
+      border:1px dashed #c8d2df;
+      border-radius:16px;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      min-height:44px;
+      padding:0 14px;
+      border:1px solid var(--border);
+      border-radius:14px;
+      background:#fff;
+      color:var(--text);
+      font-size:13px;
+      font-weight:950;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .btn:hover,.btn:active{
+      background:#edf4ff;
+    }
+
+    .btn-primary{
+      background:linear-gradient(135deg,var(--blue2),var(--blue));
+      color:#fff;
+      border-color:transparent;
+      box-shadow:0 12px 26px rgba(6,77,181,.24);
+    }
+
+    .btn-primary:hover,.btn-primary:active{
+      background:linear-gradient(135deg,#0f5fd1,#043f96);
+    }
+
+    .btn-orange{
+      background:var(--orange);
+      border-color:var(--orange);
+      color:#fff;
+    }
+
+    .btn-danger{
+      color:var(--danger);
+      border-color:#f0cbd1;
+      background:#fff7f7;
+    }
+
+    .btn-small{
+      min-height:40px;
+      padding:0 12px;
+      font-size:12px;
+      border-radius:13px;
+    }
+
+    .btn:disabled{opacity:.65;cursor:not-allowed}
+
+    .send-panel{
+      padding:0;
+      background:transparent;
+      border:0;
+      box-shadow:none;
+      overflow:visible;
+    }
+
+    .send-panel::before{display:none}
+
+    .send-button{
+      width:100%;
+      min-height:62px;
+      border-radius:18px;
+      font-size:16px;
+      letter-spacing:.02em;
+      text-transform:uppercase;
+    }
+
+    .notif-list{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .notif-card{
+      padding:15px;
+      border:1px solid var(--border);
+      border-radius:20px;
+      background:#fff;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .notif-head{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+    }
+
+    .notif-title{
+      font-size:16px;
+      line-height:1.25;
+      font-weight:950;
+      color:#101828;
+    }
+
+    .notif-meta{
+      margin-top:6px;
+      color:#667085;
+      font-size:12px;
+      line-height:1.45;
+      font-weight:750;
+    }
+
+    .badge-row{
+      display:flex;
+      gap:7px;
+      flex-wrap:wrap;
+      margin-top:11px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      padding:6px 9px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:950;
+      border:1px solid transparent;
+      white-space:nowrap;
+    }
+
+    .badge.pendente{background:#fff3d7;color:#8a5200;border-color:#ffd993}
+    .badge.resolvido{background:#eaf8ef;color:#1d6537;border-color:#bfe5cc}
+    .badge.alta,.badge.urgente{background:#fff1f3;color:#9a2436;border-color:#f0cbd1}
+    .badge.media{background:#eef6ff;color:#12479b;border-color:#cadefa}
+    .badge.baixa{background:#effbf4;color:#27633c;border-color:#c8e4d2}
+
+    .notif-actions{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:8px;
+      margin-top:13px;
+    }
+
+    .notif-actions .btn{
+      width:100%;
+      min-height:46px;
+    }
+
+    .detail-box{
+      display:none;
+      margin-top:12px;
+      padding:13px;
+      border:1px solid #e0e7f1;
+      border-radius:16px;
+      background:#f7faff;
+    }
+
+    .detail-box.open{display:block}
+
+    .detail-text{
+      color:#354a64;
+      font-size:13px;
+      line-height:1.5;
+      white-space:pre-wrap;
+      font-weight:650;
+    }
+
+    .detail-photos{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:9px;
+      margin-top:10px;
+    }
+
+    .detail-photos img{
+      width:100%;
+      height:105px;
+      object-fit:cover;
+      border-radius:14px;
+      border:1px solid #d7e0ec;
+    }
+
+    .resolve-box{
+      display:none;
+      margin-top:12px;
+      padding:13px;
+      border:1px solid #d9e4ef;
+      border-radius:16px;
+      background:#fff;
+    }
+
+    .resolve-box.open{display:block}
+
+    .dashboard-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:9px;
+      margin-bottom:14px;
+    }
+
+    .dash-card{
+      padding:14px 10px;
+      border-radius:18px;
+      background:#fff;
+      border:1px solid var(--border);
+      box-shadow:var(--shadow-soft);
+      text-align:center;
+    }
+
+    .dash-card b{
+      display:block;
+      font-size:24px;
+      color:#101828;
+      line-height:1;
+    }
+
+    .dash-card span{
+      display:block;
+      margin-top:7px;
+      color:#667085;
+      font-size:10px;
+      font-weight:950;
+      text-transform:uppercase;
+      letter-spacing:.03em;
+    }
+
+    .integration-note{
+      padding:14px;
+      border:1px dashed #aebbd0;
+      border-radius:16px;
+      background:#f9fbff;
+      color:#465a73;
+      font-size:13px;
+      font-weight:700;
+      line-height:1.5;
+    }
+
+    .bottom-actions{
+      position:fixed;
+      left:0;
+      right:0;
+      bottom:0;
+      z-index:9999;
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:4px;
+      padding:8px 10px calc(8px + var(--safe-bottom));
+      border-top:1px solid rgba(203,215,232,.85);
+      background:rgba(255,255,255,.96);
+      backdrop-filter:blur(16px);
+      box-shadow:0 -10px 24px rgba(7,26,54,.12);
+    }
+
+    .bottom-actions .btn{
+      width:100%;
+      min-height:58px;
+      height:auto;
+      padding:5px 2px;
+      border:0;
+      border-radius:16px;
+      background:transparent;
+      box-shadow:none;
+      font-size:11px;
+      line-height:1.1;
+      flex-direction:column;
+      gap:4px;
+      text-align:center;
+      color:#667085;
+    }
+
+    .bottom-actions .btn span{
+      display:block;
+      font-size:24px;
+      line-height:1;
+    }
+
+    .bottom-actions .btn small{
+      display:block;
+      font-size:11px;
+      font-weight:950;
+    }
+
+    .bottom-actions .btn.active{
+      color:var(--blue);
+      background:#eef5ff;
+    }
+
+    .mobile-only-input{
+      display:none!important;
+    }
+
+    .desktop-only{
+      display:none;
+    }
+
+    @media(min-width:560px){
+      .main{
+        padding-left:20px;
+        padding-right:20px;
+      }
+      .mobile-header{
+        margin-left:-20px;
+        margin-right:-20px;
+        padding-left:24px;
+        padding-right:24px;
+      }
+      .recipient-grid{
+        grid-template-columns:1fr 1fr;
+      }
+      .photos-preview,.detail-photos{
+        grid-template-columns:repeat(3,1fr);
+      }
+      .notif-actions{
+        grid-template-columns:auto auto;
+        justify-content:flex-start;
+      }
+      .notif-actions .btn{
+        width:auto;
+      }
+    }
+
+    @media(min-width:900px){
+      body{
+        padding-bottom:28px;
+        background:var(--bg);
+      }
+      .app{
+        display:flex;
+      }
+      .sidebar{
+        position:fixed;
+        inset:0 auto 0 0;
+        width:230px;
+        padding:22px 14px;
+        display:block;
+        background:linear-gradient(180deg,#06152c,#09234a);
+        color:#fff;
+      }
+      .brand{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        padding:0 8px 25px;
+      }
+      .brand-icon{
+        width:42px;
+        height:42px;
+        border:2px solid #2c75df;
+        border-radius:13px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-weight:900;
+        font-size:20px;
+        color:#7bb0ff;
+      }
+      .brand strong{display:block;font-size:15px}
+      .brand small{display:block;font-size:9px;letter-spacing:2.3px;color:#c4d2e6}
+      .nav-link{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        padding:13px 12px;
+        border-radius:13px;
+        background:rgba(255,255,255,.10);
+        font-size:13px;
+        font-weight:850;
+        color:#fff;
+      }
+      .nav-link:hover{background:#154b9f}
+      .main{
+        max-width:none;
+        margin-left:230px;
+        width:calc(100% - 230px);
+        padding:18px 22px 28px;
+      }
+      .mobile-header{
+        display:none;
+      }
+      .topbar{
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-start;
+        gap:15px;
+        margin-bottom:16px;
+        padding:20px 22px;
+        background:linear-gradient(135deg,#071a36,#0b315f);
+        color:#fff;
+        border-radius:0 0 22px 22px;
+        box-shadow:var(--shadow);
+      }
+      .topbar h1{
+        margin:0 0 6px;
+        font-size:28px;
+        letter-spacing:-.5px;
+      }
+      .breadcrumb{
+        font-size:12px;
+        color:#d7e4f7;
+        font-weight:750;
+      }
+      .top-actions{
+        display:flex;
+        flex-wrap:wrap;
+        gap:8px;
+      }
+      .tabs{
+        position:static;
+        max-width:720px;
+        background:transparent;
+        backdrop-filter:none;
+        padding:0;
+      }
+      .workspace{
+        display:grid;
+        grid-template-columns:minmax(420px,44%) minmax(520px,56%);
+        gap:16px;
+        align-items:start;
+      }
+      .fields{
+        grid-template-columns:1fr 1fr;
+      }
+      .priority-row{
+        grid-template-columns:repeat(4,1fr);
+      }
+      .photo-actions{
+        grid-template-columns:1fr 1fr auto;
+      }
+      .bottom-actions{
+        display:none;
+      }
+      .desktop-only{
+        display:inline-flex;
+      }
+    }
+
+    @supports not selector(:has(*)){
+      .recipient-card.selected{
+        border-color:#b4cdf7;
+        background:#f1f7ff;
+        box-shadow:0 0 0 3px rgba(18,101,221,.08);
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon">🔔</div>
+      <div>
+        <strong>NOTIFICAÇÕES</strong>
+        <small>INTEGRA</small>
+      </div>
+    </div>
+    <a class="nav-link" href="index_documentos.html">← <span>Voltar para Documentos</span></a>
+  </aside>
+
+  <main class="main">
+    <header class="mobile-header">
+      <div class="mobile-header-inner">
+        <a class="icon-button" href="index_documentos.html" aria-label="Voltar">‹</a>
+        <div class="header-title">
+          <strong>Notificações</strong>
+          <small>Integra • <span id="loggedUserMobile">Usuário</span></small>
+        </div>
+        <button class="icon-button header-bell" type="button" onclick="ativarAlertasSonoros(); setTab('recebidas')" aria-label="Abrir recebidas e ativar alertas">
+          🔔
+          <span class="counter-dot" id="mobilePendingCount">0</span>
+        </button>
+      </div>
+    </header>
+
+    <header class="topbar">
+      <div>
+        <h1>Notificações</h1>
+        <div class="breadcrumb">Documentos › Notificações</div>
+        <div class="user-chip">👤 Usuário logado: <b id="loggedUserTop">Usuário</b></div>
+      </div>
+      <div class="top-actions">
+        <a class="btn" href="../../index.html">← Menu Principal</a>
+        <a class="btn" href="index_documentos.html">← Documentos</a>
+        <button class="btn btn-orange" type="button" onclick="setTab('nova')">+ Nova Notificação</button>
+        <button class="btn" type="button" id="soundAlertBtn" onclick="ativarAlertasSonoros()">🔔 Ativar som</button>
+      </div>
+    </header>
+
+    <div class="status-msg" id="statusBox"></div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab-btn active" type="button" data-tab="nova" onclick="setTab('nova')"><span class="tab-icon">✎</span>Nova</button>
+      <button class="tab-btn" type="button" data-tab="recebidas" onclick="setTab('recebidas')"><span class="tab-icon">📥</span>Recebidas <span class="tab-count" id="tabReceivedCount">0</span></button>
+      <button class="tab-btn" type="button" data-tab="enviadas" onclick="setTab('enviadas')"><span class="tab-icon">✈</span>Enviadas</button>
+    </div>
+
+    <section class="tab-panel active" id="tab-nova">
+      <div class="workspace">
+        <div class="editor-column">
+          <section class="panel">
+            <h2 class="panel-title"><span class="section-number">1</span> Dados da notificação</h2>
+            <div class="fields">
+              <div class="field full">
+                <label class="form-label" for="notifyTitle">Título da notificação <span class="required">*</span></label>
+                <input type="text" id="notifyTitle" placeholder="Digite o título" autocomplete="off">
+              </div>
+              <div class="field full">
+                <label class="form-label" for="notifyMessage">Mensagem / Descrição <span class="required">*</span></label>
+                <div class="textarea-wrap">
+                  <textarea id="notifyMessage" maxlength="1000" placeholder="Descreva a ocorrência..."></textarea>
+                  <span class="char-counter" id="messageCounter">0/1000</span>
+                </div>
+              </div>
+              <div class="field full">
+                <label class="form-label">Prioridade</label>
+                <div class="priority-row">
+                  <label class="priority-option"><input type="radio" name="priority" value="Baixa"><span>Baixa</span></label>
+                  <label class="priority-option"><input type="radio" name="priority" value="Média" checked><span>Normal</span></label>
+                  <label class="priority-option"><input type="radio" name="priority" value="Alta"><span>Alta</span></label>
+                  <label class="priority-option"><input type="radio" name="priority" value="Urgente"><span>Urgente</span></label>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2 class="panel-title"><span class="section-number">2</span> Destinatários</h2>
+            <div class="recipient-tools">
+              <div class="search-wrap">
+                <input type="text" id="recipientSearch" placeholder="Buscar usuário..." oninput="renderUsers()" autocomplete="off">
+                <span class="search-icon">⌕</span>
+              </div>
+              <div class="select-all-row">
+                <button class="btn btn-small" type="button" onclick="selectAllUsers(true)">Selecionar todos</button>
+                <button class="btn btn-small" type="button" onclick="selectAllUsers(false)">Limpar seleção</button>
+              </div>
+            </div>
+            <div class="recipient-grid" id="recipientGrid"></div>
+          </section>
+        </div>
+
+        <div class="preview-column">
+          <section class="panel">
+            <h2 class="panel-title"><span class="section-number">3</span> Fotos da ocorrência</h2>
+            <div class="photo-actions">
+              <label class="photo-upload" for="cameraInput">📷 Tirar foto</label>
+              <label class="photo-upload" for="galleryInput">🖼 Galeria</label>
+              <button class="btn btn-danger" type="button" onclick="clearDraftPhotos()">🗑 Limpar</button>
+              <input class="mobile-only-input" id="cameraInput" type="file" accept="image/*" capture="environment" onchange="addDraftPhotos(this.files);this.value=''">
+              <input class="mobile-only-input" id="galleryInput" type="file" accept="image/*" multiple onchange="addDraftPhotos(this.files);this.value=''">
+            </div>
+            <div class="photos-preview" id="draftPhotosPreview"></div>
+          </section>
+
+          <section class="panel send-panel">
+            <button class="btn btn-primary send-button" type="button" onclick="sendNotification()">✈ Enviar notificação</button>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="tab-recebidas">
+      <section class="panel">
+        <h2 class="panel-title"><span class="section-number">1</span> Minhas recebidas</h2>
+        <div class="dashboard-grid">
+          <div class="dash-card"><b id="dashReceivedPending">0</b><span>Pendentes</span></div>
+          <div class="dash-card"><b id="dashReceivedDone">0</b><span>Resolvidas</span></div>
+          <div class="dash-card"><b id="dashReceivedTotal">0</b><span>Total</span></div>
+        </div>
+        <div class="notif-list" id="receivedList"></div>
+      </section>
+    </section>
+
+    <section class="tab-panel" id="tab-enviadas">
+      <section class="panel">
+        <h2 class="panel-title"><span class="section-number">1</span> Enviadas por mim</h2>
+        <div class="dashboard-grid">
+          <div class="dash-card"><b id="dashSentPending">0</b><span>Pendentes</span></div>
+          <div class="dash-card"><b id="dashSentDone">0</b><span>Resolvidas</span></div>
+          <div class="dash-card"><b id="dashSentTotal">0</b><span>Total</span></div>
+        </div>
+        <div class="notif-list" id="sentList"></div>
+      </section>
+      <section class="panel">
+        <div class="integration-note">
+          <b>Integração futura:</b> o histórico deverá ser gravado no Google Sheets, as imagens no Google Drive e esta tela deverá usar a sessão real do Integra.
+        </div>
+      </section>
+    </section>
+  </main>
+</div>
+
+<nav class="bottom-actions" aria-label="Ações rápidas">
+  <button class="btn active" type="button" data-bottom-tab="nova" onclick="setTab('nova')"><span>✎</span><small>Nova</small></button>
+  <button class="btn" type="button" data-bottom-tab="recebidas" onclick="ativarAlertasSonoros(); setTab('recebidas')"><span>📥</span><small>Recebidas</small></button>
+  <button class="btn" type="button" data-bottom-tab="enviadas" onclick="setTab('enviadas')"><span>✈</span><small>Enviadas</small></button>
+  <a class="btn" href="index_documentos.html"><span>↩</span><small>Voltar</small></a>
+</nav>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const safe = value => String(value || '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+
+  const STORAGE_KEY = 'integra_notificacoes_cache_v2';
+  const CONFIG_KEY = 'appConfigSistema';
+  const LEGACY_CONFIG_KEY = 'configEmpresaSistema';
+  const WEB_APP_URL_PADRAO = 'https://script.google.com/macros/s/AKfycbyh8-Eq83C4Ri_-fH98_X-T8F153Yski4YRmjJ3Vtuglyk7DFb8s3GLIAwpXQCB9wVe7Q/exec';
+  const SESSION_KEYS = ['sessaoUsuarioIntegra','sessaoUsuarioIntegraPersistente'];
+  const CHECK_NOTIFICATIONS_MS = 30000;
+  const ALERT_REPEAT_MS = {
+    urgente: 60 * 1000,
+    alta: 2 * 60 * 1000,
+    media: 5 * 60 * 1000,
+    normal: 10 * 60 * 1000,
+    baixa: 10 * 60 * 1000
+  };
+
+  const state = {
+    loggedUser: { login:'marco', nome:'Marco Antônio', perfil:'USUARIO' },
+    users: [],
+    draftPhotos: [],
+    notifications: [],
+    receivedNotifications: [],
+    sentNotifications: [],
+    connected: false,
+    audioEnabled: false,
+    audioContext: null,
+    alertState: { visualizadas: {}, ultimoAviso: {} },
+    notificationPollTimer: null
+  };
+
+
+  function alertStorageKey(){
+    return 'integra_notificacoes_alertas_' + normalizeLocalLogin(state.loggedUser.login || state.loggedUser.nome);
+  }
+
+  function loadAlertState(){
+    try{
+      const saved = JSON.parse(localStorage.getItem(alertStorageKey()) || '{}');
+      state.alertState = {
+        visualizadas: saved.visualizadas && typeof saved.visualizadas === 'object' ? saved.visualizadas : {},
+        ultimoAviso: saved.ultimoAviso && typeof saved.ultimoAviso === 'object' ? saved.ultimoAviso : {}
+      };
+    }catch(error){
+      state.alertState = { visualizadas: {}, ultimoAviso: {} };
+    }
+  }
+
+  function saveAlertState(){
+    try{ localStorage.setItem(alertStorageKey(), JSON.stringify(state.alertState)); }catch(error){}
+  }
+
+  function prioridadeKey(valor){
+    const p = String(valor || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    if(p.includes('urgent')) return 'urgente';
+    if(p.includes('alta')) return 'alta';
+    if(p.includes('media') || p.includes('normal')) return 'media';
+    if(p.includes('baixa')) return 'baixa';
+    return 'normal';
+  }
+
+  function intervaloAlertaPorPrioridade(valor){
+    return ALERT_REPEAT_MS[prioridadeKey(valor)] || ALERT_REPEAT_MS.normal;
+  }
+
+  function notificacaoPendente(item){
+    const status = String(item.status || '').trim().toUpperCase();
+    return status !== 'RESOLVIDO' && status !== 'RESOLVIDA';
+  }
+
+  function ativarAlertasSonoros(){
+    try{
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if(AudioCtx && !state.audioContext) state.audioContext = new AudioCtx();
+      if(state.audioContext && state.audioContext.state === 'suspended') state.audioContext.resume();
+      state.audioEnabled = true;
+      const btn = $('soundAlertBtn');
+      if(btn) btn.textContent = '🔔 Som ativo';
+      tocarSomNotificacao(true);
+      showStatus('Alertas sonoros ativados. Pendências vão repetir conforme a prioridade.', 'ok');
+      processarAlertasRecebidas(true);
+    }catch(error){
+      showStatus('Não foi possível ativar o som neste dispositivo.', 'error');
+    }
+  }
+
+  function tocarSomNotificacao(teste=false){
+    if(!state.audioEnabled) return;
+
+    try{
+      const ctx = state.audioContext || new (window.AudioContext || window.webkitAudioContext)();
+      state.audioContext = ctx;
+      if(ctx.state === 'suspended') ctx.resume();
+
+      const notas = teste ? [880, 1175] : [1046, 1318, 1046];
+      notas.forEach((freq,index) => {
+        const inicio = ctx.currentTime + (index * 0.16);
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, inicio);
+        gain.gain.setValueAtTime(0.001, inicio);
+        gain.gain.exponentialRampToValueAtTime(0.22, inicio + 0.025);
+        gain.gain.exponentialRampToValueAtTime(0.001, inicio + 0.13);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(inicio);
+        osc.stop(inicio + 0.15);
+      });
+
+      if(navigator.vibrate && !teste) navigator.vibrate([180, 80, 180]);
+    }catch(error){}
+  }
+
+  function marcarNotificacaoVisualizada(id){
+    const chave = String(id || '').trim();
+    if(!chave) return;
+    state.alertState.visualizadas[chave] = Date.now();
+    delete state.alertState.ultimoAviso[chave];
+    saveAlertState();
+  }
+
+  function processarAlertasRecebidas(forcar=false){
+    if(!state.audioEnabled) return;
+
+    const agora = Date.now();
+    const recebidas = (state.connected ? state.receivedNotifications : localReceived()).map(normalizeNotification);
+    let tocou = false;
+
+    recebidas.forEach(item => {
+      const id = String(item.id || '').trim();
+      if(!id || !notificacaoPendente(item)) return;
+      if(state.alertState.visualizadas[id]) return;
+
+      const ultimo = Number(state.alertState.ultimoAviso[id] || 0);
+      const intervalo = intervaloAlertaPorPrioridade(item.priority);
+
+      if(forcar || !ultimo || agora - ultimo >= intervalo){
+        tocarSomNotificacao(false);
+        state.alertState.ultimoAviso[id] = agora;
+        tocou = true;
+      }
+    });
+
+    if(tocou){
+      showStatus('Você tem notificação pendente não visualizada.', 'ok');
+      saveAlertState();
+    }
+  }
+
+  function iniciarMonitoramentoNotificacoes(){
+    if(state.notificationPollTimer) clearInterval(state.notificationPollTimer);
+    state.notificationPollTimer = setInterval(() => {
+      refreshNotifications(false);
+    }, CHECK_NOTIFICATIONS_MS);
+  }
+
+  function showStatus(message,type=''){
+    const box = $('statusBox');
+    if(!box) return;
+    box.className = 'status-msg visible ' + type;
+    box.textContent = message;
+    setTimeout(() => { box.className = 'status-msg'; }, 4200);
+  }
+
+  function getStoredJson(key){
+    try{ return JSON.parse(localStorage.getItem(key) || 'null'); }
+    catch(error){ return null; }
+  }
+
+  function getSession(){
+    for(const key of SESSION_KEYS){
+      const sessao = getStoredJson(key);
+      if(sessao && sessao.usuario) return sessao;
+    }
+    return null;
+  }
+
+  function applySession(){
+    const sessao = getSession();
+    const usuario = sessao && sessao.usuario ? sessao.usuario : null;
+
+    if(usuario){
+      state.loggedUser = {
+        login: String(usuario.login || usuario.usuario || usuario.email || '').trim(),
+        nome: String(usuario.nome || usuario.name || usuario.login || '').trim(),
+        perfil: String(usuario.perfil || 'USUARIO').trim().toUpperCase()
+      };
+    }
+
+    if(!state.loggedUser.login){
+      state.loggedUser.login = normalizeLocalLogin(state.loggedUser.nome);
+    }
+
+    if(!state.loggedUser.nome){
+      state.loggedUser.nome = state.loggedUser.login;
+    }
+  }
+
+  function normalizeLocalLogin(value){
+    return String(value || '')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+      .replace(/[^a-zA-Z0-9_\-]/g,'_')
+      .replace(/_+/g,'_')
+      .replace(/^_+|_+$/g,'')
+      .toLowerCase() || 'usuario';
+  }
+
+  function getConfigObject(){
+    const configFinal = {};
+
+    const legacy = getStoredJson(LEGACY_CONFIG_KEY);
+    if(legacy && typeof legacy === 'object') Object.assign(configFinal, legacy);
+
+    const principal = getStoredJson(CONFIG_KEY);
+    if(principal && typeof principal === 'object') Object.assign(configFinal, principal);
+
+    if(window.appConfigSistema && typeof window.appConfigSistema === 'object') {
+      Object.assign(configFinal, window.appConfigSistema);
+    }
+
+    return configFinal;
+  }
+
+  function firstValidUrl(...values){
+    for(const value of values){
+      const url = String(value || '').trim();
+      if(/^https?:\/\//i.test(url)) return url;
+    }
+    return '';
+  }
+
+  function findUrlDeep(obj, visited = new Set()){
+    if(!obj || typeof obj !== 'object' || visited.has(obj)) return '';
+    visited.add(obj);
+
+    const preferred = [
+      'urlAppsScript','appsScriptUrl','appScriptUrl','urlAppScript',
+      'webAppUrl','urlWebApp','scriptUrl','urlScript',
+      'apiUrl','urlApi','googleScriptUrl','googleAppsScriptUrl'
+    ];
+
+    for(const key of preferred){
+      if(typeof obj[key] === 'string' && /^https?:\/\//i.test(obj[key].trim())) return obj[key].trim();
+    }
+
+    for(const value of Object.values(obj)){
+      if(typeof value === 'string' && /^https:\/\/script\.google\.com\//i.test(value.trim())) return value.trim();
+    }
+
+    for(const value of Object.values(obj)){
+      const found = findUrlDeep(value, visited);
+      if(found) return found;
+    }
+
+    return '';
+  }
+
+  function getAppsScriptUrl(){
+    const config = getConfigObject();
+
+    // Usa primeiro a URL salva pelo configuracoes.html.
+    // Se o aparelho ainda não tiver localStorage configurado, usa a mesma URL padrão definida na tela de configurações.
+    if(config && config.urlPadraoRemovida === true){
+      return firstValidUrl(
+        config.webAppUrl,
+        config.appScriptUrl,
+        config.credenciaisUrl,
+        config.urlAppsScript,
+        config.appsScriptUrl,
+        config.urlAppScript,
+        config.urlWebApp,
+        config.scriptUrl,
+        config.urlScript,
+        config.apiUrl,
+        findUrlDeep(config)
+      );
+    }
+
+    return firstValidUrl(
+      config.webAppUrl,
+      config.appScriptUrl,
+      config.credenciaisUrl,
+      config.urlAppsScript,
+      config.appsScriptUrl,
+      config.urlAppScript,
+      config.urlWebApp,
+      config.scriptUrl,
+      config.urlScript,
+      config.apiUrl,
+      findUrlDeep(config),
+      WEB_APP_URL_PADRAO
+    );
+  }
+
+  async function appPost(action,payload={}){
+    const url = getAppsScriptUrl();
+
+    if(!url){
+      throw new Error('URL do Apps Script não encontrada. Salve a URL em configuracoes.html no campo URL do Web App Script.');
+    }
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action, ...payload })
+    });
+
+    const text = await response.text();
+    let data = null;
+
+    if(!text || !String(text).trim()){
+      throw new Error('Resposta vazia do Apps Script.');
+    }
+
+    try{ data = JSON.parse(text); }
+    catch(error){
+      throw new Error('Resposta inválida do Apps Script. Verifique se a URL publicada termina com /exec e permite acesso ao Web App.');
+    }
+
+    if(!response.ok || (data.status && !['ok','OK'].includes(String(data.status)))){
+      throw new Error(data.mensagem || data.message || 'Falha na comunicação com o Apps Script.');
+    }
+
+    return data;
+  }
+
+  function loadState(){
+    const saved = getStoredJson(STORAGE_KEY) || {};
+    if(Array.isArray(saved.notifications)) state.notifications = saved.notifications;
+    if(Array.isArray(saved.users)) state.users = saved.users;
+  }
+
+  function saveState(){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        notifications: state.notifications,
+        users: state.users
+      }));
+    }catch(error){}
+  }
+
+  function setTab(tab){
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
+    document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.toggle('active', panel.id === 'tab-' + tab));
+    document.querySelectorAll('[data-bottom-tab]').forEach(btn => btn.classList.toggle('active', btn.dataset.bottomTab === tab));
+    renderLists();
+    if(tab === 'recebidas' || tab === 'enviadas') refreshNotifications(false);
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function syncMessageCounter(){
+    const msg = $('notifyMessage');
+    const counter = $('messageCounter');
+    if(msg && counter) counter.textContent = `${msg.value.length}/1000`;
+  }
+
+  function formatUser(user){
+    if(typeof user === 'string'){
+      return { login: normalizeLocalLogin(user), nome: user, perfil:'USUARIO', status:'ATIVO' };
+    }
+
+    const login = String(user.login || user.usuario || '').trim();
+    const nome = String(user.nome || user.name || login).trim();
+
+    return {
+      login: login || normalizeLocalLogin(nome),
+      nome: nome || login,
+      perfil: String(user.perfil || 'USUARIO').trim().toUpperCase(),
+      status: String(user.status || 'ATIVO').trim().toUpperCase(),
+      abaNotificacoes: String(user.abaNotificacoes || '').trim(),
+      pastaNotificacoesId: String(user.pastaNotificacoesId || '').trim()
+    };
+  }
+
+  async function loadUsers(){
+    try{
+      const data = await appPost('listarUsuarios');
+      const usuarios = Array.isArray(data.usuarios) ? data.usuarios : [];
+      state.users = usuarios
+        .map(formatUser)
+        .filter(user => user.login && (!user.status || user.status === 'ATIVO'));
+
+      state.connected = true;
+      saveState();
+    }catch(error){
+      state.connected = false;
+
+      if(!state.users.length){
+        state.users = [state.loggedUser].map(formatUser);
+      }
+
+      showStatus('Não foi possível carregar usuários reais: ' + error.message, 'error');
+      console.error('Erro ao listar usuários:', error);
+    }
+
+    renderUsers();
+  }
+
+  function renderUsers(){
+    const grid = $('recipientGrid');
+    if(!grid) return;
+
+    const search = ($('recipientSearch')?.value || '').trim().toLowerCase();
+    const selected = new Set([...document.querySelectorAll('.recipient-check:checked')].map(input => input.value));
+
+    const loggedLogin = normalizeLocalLogin(state.loggedUser.login);
+    const users = state.users
+      .map(formatUser)
+      .filter(user => normalizeLocalLogin(user.login) !== loggedLogin)
+      .filter(user => !search || user.nome.toLowerCase().includes(search) || user.login.toLowerCase().includes(search));
+
+    $('loggedUserTop').textContent = state.loggedUser.nome;
+    $('loggedUserMobile').textContent = state.loggedUser.nome;
+
+    grid.innerHTML = users.length ? users.map(user => {
+      const checked = selected.has(user.login) ? 'checked' : '';
+      return `
+        <label class="recipient-card">
+          <input
+            type="checkbox"
+            class="recipient-check"
+            value="${safe(user.login)}"
+            data-login="${safe(user.login)}"
+            data-nome="${safe(user.nome)}"
+            ${checked}
+            onchange="this.closest('.recipient-card').classList.toggle('selected', this.checked)"
+          >
+          <span>${safe(user.nome)}<small style="display:block;color:#98a2b3;font-size:10px;margin-top:2px">${safe(user.login)}</small></span>
+        </label>
+      `;
+    }).join('') : '<div class="empty" style="grid-column:1 / -1">Nenhum destinatário encontrado.</div>';
+
+    document.querySelectorAll('.recipient-card').forEach(label => {
+      const input = label.querySelector('input');
+      if(input) label.classList.toggle('selected', input.checked);
+    });
+  }
+
+  function selectAllUsers(value){
+    document.querySelectorAll('.recipient-check').forEach(input => {
+      input.checked = value;
+      input.closest('.recipient-card')?.classList.toggle('selected', value);
+    });
+  }
+
+  function selectedRecipients(){
+    return [...document.querySelectorAll('.recipient-check:checked')].map(input => ({
+      login: input.dataset.login || input.value,
+      nome: input.dataset.nome || input.value
+    }));
+  }
+
+  function optimizeImage(file,maxSide=1400,quality=.86){
+    return new Promise((resolve,reject)=>{
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = event => {
+        const img = new Image();
+        img.onerror = reject;
+        img.onload = () => {
+          const ratio = Math.min(1,maxSide / Math.max(img.naturalWidth,img.naturalHeight));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(img.naturalWidth * ratio);
+          canvas.height = Math.round(img.naturalHeight * ratio);
+          canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+
+          const base64 = canvas.toDataURL('image/jpeg',quality);
+          const nome = file.name || 'foto.jpg';
+
+          resolve({
+            id: uid(),
+            src: base64,
+            base64: base64,
+            name: nome,
+            nome: nome,
+            type: 'image/jpeg',
+            tipo: 'image/jpeg'
+          });
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function addDraftPhotos(files){
+    const valid = [...files].filter(file => file && file.type.startsWith('image/'));
+    for(const file of valid){
+      try{ state.draftPhotos.push(await optimizeImage(file)); }
+      catch(error){ showStatus('Uma foto não pôde ser carregada.','error'); }
+    }
+    renderDraftPhotos();
+  }
+
+  function removeDraftPhoto(id){
+    state.draftPhotos = state.draftPhotos.filter(photo => photo.id !== id);
+    renderDraftPhotos();
+  }
+
+  function clearDraftPhotos(){
+    state.draftPhotos = [];
+    renderDraftPhotos();
+  }
+
+  function renderDraftPhotos(){
+    const preview = $('draftPhotosPreview');
+    if(!preview) return;
+
+    if(!state.draftPhotos.length){
+      preview.innerHTML = '<div class="empty" style="grid-column:1 / -1">Nenhuma foto anexada ainda.</div>';
+      return;
+    }
+
+    preview.innerHTML = state.draftPhotos.map((photo,index) => `
+      <div class="photo-thumb">
+        <img src="${photo.src || photo.base64}" alt="Foto ${index+1}">
+        <button type="button" onclick="removeDraftPhoto('${photo.id}')" aria-label="Remover foto">×</button>
+        <div class="photo-caption-name">Foto ${String(index+1).padStart(2,'0')}</div>
+      </div>
+    `).join('') + '<label class="add-photo-card" for="galleryInput">＋<br>Adicionar<br>mais fotos</label>';
+  }
+
+  function priority(){
+    return document.querySelector('input[name="priority"]:checked')?.value || 'Média';
+  }
+
+  function priorityForBackend(value){
+    const text = String(value || 'Média').trim().toUpperCase();
+    return text.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  }
+
+  function priorityForDisplay(value){
+    const text = String(value || 'MEDIA').trim().toUpperCase();
+    const clean = text.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    if(clean === 'BAIXA') return 'Baixa';
+    if(clean === 'ALTA') return 'Alta';
+    if(clean === 'URGENTE') return 'Urgente';
+    return 'Média';
+  }
+
+  function statusForDisplay(value){
+    const clean = String(value || 'PENDENTE').trim().toUpperCase();
+    return clean === 'RESOLVIDO' ? 'Resolvido' : 'Pendente';
+  }
+
+  function nowText(){
+    return new Date().toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'});
+  }
+
+  function photosForBackend(photos,prefix='foto'){
+    return (Array.isArray(photos) ? photos : []).map((photo,index) => ({
+      nome: photo.nome || photo.name || `${prefix}_${String(index+1).padStart(2,'0')}.jpg`,
+      tipo: photo.tipo || photo.type || 'image/jpeg',
+      base64: photo.base64 || photo.src || ''
+    })).filter(photo => photo.base64);
+  }
+
+  function linksToPhotos(links,ids=''){
+    const urls = String(links || '').split(/\n+/).map(item => item.trim()).filter(Boolean);
+    const fileIds = String(ids || '').split(',').map(item => item.trim());
+
+    return urls.map((url,index) => ({
+      id: fileIds[index] || uid(),
+      src: url,
+      base64: '',
+      nome: `foto_${String(index+1).padStart(2,'0')}.jpg`,
+      tipo: 'image/jpeg'
+    }));
+  }
+
+  function normalizeNotification(item){
+    if(item && item.titulo !== undefined){
+      return {
+        id: String(item.id || '').trim(),
+        title: String(item.titulo || '').trim(),
+        message: String(item.mensagem || '').trim(),
+        priority: priorityForDisplay(item.prioridade),
+        sender: String(item.remetenteNome || item.remetenteLogin || '').trim(),
+        senderLogin: String(item.remetenteLogin || '').trim(),
+        recipients: [String(item.destinatarioNome || item.destinatarioLogin || '').trim()].filter(Boolean),
+        recipientLogins: [String(item.destinatarioLogin || '').trim()].filter(Boolean),
+        status: statusForDisplay(item.status),
+        createdAt: String(item.data || '').trim(),
+        photos: linksToPhotos(item.fotosLinks, item.fotosIds),
+        solutionText: String(item.resposta || '').trim(),
+        solutionPhotos: linksToPhotos(item.fotosResolucaoLinks, item.fotosResolucaoIds),
+        solvedAt: String(item.dataResolucao || '').trim(),
+        aba: String(item.aba || '').trim(),
+        linha: item.linha || ''
+      };
+    }
+
+    return item;
+  }
+
+  async function sendNotification(){
+    const title = $('notifyTitle').value.trim();
+    const message = $('notifyMessage').value.trim();
+    const recipients = selectedRecipients();
+
+    if(!title || !message){
+      showStatus('Preencha título e mensagem para enviar.','error');
+      return;
+    }
+
+    if(!recipients.length){
+      showStatus('Selecione pelo menos um destinatário.','error');
+      return;
+    }
+
+    const payload = {
+      remetenteLogin: state.loggedUser.login,
+      remetenteNome: state.loggedUser.nome,
+      titulo: title,
+      mensagem: message,
+      prioridade: priorityForBackend(priority()),
+      destinatarios: recipients,
+      fotos: photosForBackend(state.draftPhotos, title)
+    };
+
+    const btn = document.querySelector('button[onclick="sendNotification()"]');
+    if(btn) btn.disabled = true;
+
+    try{
+      await appPost('enviarNotificacao', payload);
+      showStatus('Notificação enviada e salva na planilha/Drive.','ok');
+
+      $('notifyTitle').value = '';
+      $('notifyMessage').value = '';
+      syncMessageCounter();
+      selectAllUsers(false);
+      clearDraftPhotos();
+
+      await refreshNotifications(false);
+      setTab('enviadas');
+
+    }catch(error){
+      console.error('Erro ao enviar notificação:', error);
+      showStatus('Não foi possível salvar no Apps Script. Nada foi gravado: ' + error.message,'error');
+
+    }finally{
+      if(btn) btn.disabled = false;
+    }
+  }
+
+  function statusBadge(status){
+    return status === 'Resolvido' ? 'resolvido' : 'pendente';
+  }
+
+  function prioClass(value){
+    return String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  }
+
+  function renderNotificationCard(item,mode){
+    item = normalizeNotification(item);
+    const people = mode === 'sent' ? `Para: ${safe((item.recipients || []).join(', '))}` : `Enviado por: ${safe(item.sender)}`;
+    const photos = (item.photos || []).length;
+    const solutionPhotos = (item.solutionPhotos || []).length;
+
+    return `<article class="notif-card">
+      <div class="notif-head">
+        <div>
+          <div class="notif-title">${safe(item.title)}</div>
+          <div class="notif-meta">${people}<br>Data: ${safe(item.createdAt || '—')}</div>
+        </div>
+        <span class="badge ${statusBadge(item.status)}">${safe(item.status)}</span>
+      </div>
+
+      <div class="badge-row">
+        <span class="badge ${prioClass(item.priority)}">Prioridade: ${safe(item.priority)}</span>
+        <span class="badge media">📷 ${photos} foto(s)</span>
+        ${solutionPhotos ? `<span class="badge resolvido">✅ ${solutionPhotos} solução</span>` : ''}
+      </div>
+
+      <div class="notif-actions">
+        <button class="btn btn-small" type="button" onclick="toggleDetails('${safe(item.id)}')">👁 Ver detalhes</button>
+        ${mode === 'received' && item.status !== 'Resolvido' ? `<button class="btn btn-primary btn-small" type="button" onclick="toggleResolve('${safe(item.id)}')">✅ Resolver</button>` : ''}
+      </div>
+
+      <div class="detail-box" id="details-${safe(item.id)}">
+        <div class="detail-text"><b>Mensagem:</b>\n${safe(item.message)}</div>
+        ${photosHtml(item.photos)}
+        ${item.status === 'Resolvido' ? `<div class="detail-text" style="margin-top:10px"><b>Resposta:</b>\n${safe(item.solutionText || '—')}\n\nResolvido em: ${safe(item.solvedAt || '—')}</div>${photosHtml(item.solutionPhotos)}` : ''}
+      </div>
+
+      ${mode === 'received' ? resolveBoxHtml(item) : ''}
+    </article>`;
+  }
+
+  function photosHtml(photos=[]){
+    if(!photos.length) return '<div class="empty" style="margin-top:10px">Sem fotos anexadas.</div>';
+    return `<div class="detail-photos">${photos.map(photo => `<img src="${safe(photo.src || photo.base64 || '')}" alt="Foto">`).join('')}</div>`;
+  }
+
+  function resolveBoxHtml(item){
+    return `<div class="resolve-box" id="resolve-${safe(item.id)}">
+      <div class="field full">
+        <label class="form-label" for="solutionText-${safe(item.id)}">Resposta / solução executada</label>
+        <textarea id="solutionText-${safe(item.id)}" placeholder="Descreva o que foi feito para resolver..."></textarea>
+      </div>
+      <div class="photo-actions" style="margin-top:10px">
+        <label class="photo-upload" for="solutionCamera-${safe(item.id)}">📷 Tirar foto</label>
+        <label class="photo-upload" for="solutionGallery-${safe(item.id)}">🖼 Galeria</label>
+        <button class="btn btn-primary" type="button" onclick="markResolved('${safe(item.id)}')">Enviar resolvido</button>
+        <input class="mobile-only-input" id="solutionCamera-${safe(item.id)}" type="file" accept="image/*" capture="environment" onchange="addSolutionPhotos('${safe(item.id)}',this.files);this.value=''">
+        <input class="mobile-only-input" id="solutionGallery-${safe(item.id)}" type="file" accept="image/*" multiple onchange="addSolutionPhotos('${safe(item.id)}',this.files);this.value=''">
+      </div>
+      <div class="photos-preview" id="solutionPreview-${safe(item.id)}">${solutionPreviewHtml(item)}</div>
+    </div>`;
+  }
+
+  function solutionPreviewHtml(item){
+    return (item.solutionDraftPhotos || []).length ? item.solutionDraftPhotos.map((photo,index)=>`
+      <div class="photo-thumb">
+        <img src="${photo.src || photo.base64}" alt="Solução ${index+1}">
+        <button type="button" onclick="removeSolutionDraftPhoto('${safe(item.id)}','${safe(photo.id)}')" aria-label="Remover foto">×</button>
+        <div class="photo-caption-name">Solução ${String(index+1).padStart(2,'0')}</div>
+      </div>
+    `).join('') : '<div class="empty" style="grid-column:1 / -1">Nenhuma foto de solução anexada.</div>';
+  }
+
+  function toggleDetails(id){
+    const box = $('details-' + id);
+    if(!box) return;
+    box.classList.toggle('open');
+    if(box.classList.contains('open')){
+      marcarNotificacaoVisualizada(id);
+    }
+  }
+
+  function toggleResolve(id){
+    $('resolve-' + id)?.classList.toggle('open');
+  }
+
+  function getVisibleNotifications(){
+    if(state.connected){
+      return [...state.receivedNotifications, ...state.sentNotifications].map(normalizeNotification);
+    }
+    return state.notifications.map(normalizeNotification);
+  }
+
+  function findNotification(id){
+    return getVisibleNotifications().find(n => String(n.id) === String(id)) || null;
+  }
+
+  async function addSolutionPhotos(id,files){
+    let item = findNotification(id);
+    if(!item) return;
+
+    const targetList = state.connected ? state.receivedNotifications : state.notifications;
+    item = targetList.find(n => String(normalizeNotification(n).id) === String(id)) || item;
+
+    if(!Array.isArray(item.solutionDraftPhotos)) item.solutionDraftPhotos = [];
+
+    for(const file of [...files].filter(file => file && file.type.startsWith('image/'))){
+      try{ item.solutionDraftPhotos.push(await optimizeImage(file)); }
+      catch(error){ showStatus('Uma foto da solução não pôde ser carregada.','error'); }
+    }
+
+    saveState();
+    renderLists();
+    const box = $('resolve-' + id);
+    if(box) box.classList.add('open');
+  }
+
+  function removeSolutionDraftPhoto(id,photoId){
+    const targetList = state.connected ? state.receivedNotifications : state.notifications;
+    const item = targetList.find(n => String(normalizeNotification(n).id) === String(id));
+    if(!item) return;
+
+    item.solutionDraftPhotos = (item.solutionDraftPhotos || []).filter(p => String(p.id) !== String(photoId));
+    saveState();
+    renderLists();
+
+    const box = $('resolve-' + id);
+    if(box) box.classList.add('open');
+  }
+
+  async function markResolved(id){
+    const targetList = state.connected ? state.receivedNotifications : state.notifications;
+    let item = targetList.find(n => String(normalizeNotification(n).id) === String(id));
+    if(!item) return;
+
+    const normalized = normalizeNotification(item);
+    const text = $('solutionText-' + id)?.value.trim() || '';
+    const draftPhotos = item.solutionDraftPhotos || normalized.solutionDraftPhotos || [];
+
+    if(!text && !draftPhotos.length){
+      showStatus('Informe uma resposta ou anexe uma foto da solução.','error');
+      return;
+    }
+
+    try{
+      await appPost('resolverNotificacao', {
+        login: state.loggedUser.login,
+        nome: state.loggedUser.nome,
+        id: normalized.id,
+        resposta: text,
+        fotosResolucao: photosForBackend(draftPhotos, normalized.title + '_resolucao')
+      });
+
+      showStatus('Notificação marcada como resolvida na planilha/Drive.','ok');
+      await refreshNotifications(false);
+
+    }catch(error){
+      showStatus('Não foi possível atualizar no Apps Script. Nada foi gravado: ' + error.message,'error');
+    }
+  }
+
+  function localReceived(){
+    const login = normalizeLocalLogin(state.loggedUser.login);
+    const nome = state.loggedUser.nome;
+
+    return state.notifications
+      .map(normalizeNotification)
+      .filter(n => (n.recipientLogins || []).map(normalizeLocalLogin).includes(login) || (n.recipients || []).includes(nome));
+  }
+
+  function localSent(){
+    const login = normalizeLocalLogin(state.loggedUser.login);
+    const nome = state.loggedUser.nome;
+
+    return state.notifications
+      .map(normalizeNotification)
+      .filter(n => normalizeLocalLogin(n.senderLogin) === login || n.sender === nome);
+  }
+
+  function renderLists(){
+    const received = state.connected ? state.receivedNotifications.map(normalizeNotification) : localReceived();
+    const sent = state.connected ? state.sentNotifications.map(normalizeNotification) : localSent();
+    const receivedPending = received.filter(n => n.status !== 'Resolvido').length;
+
+    $('receivedList').innerHTML = received.length ? received.map(item => renderNotificationCard(item,'received')).join('') : '<div class="empty">Nenhuma notificação recebida ainda.</div>';
+    $('sentList').innerHTML = sent.length ? sent.map(item => renderNotificationCard(item,'sent')).join('') : '<div class="empty">Nenhuma notificação enviada ainda.</div>';
+
+    $('dashReceivedPending').textContent = receivedPending;
+    $('dashReceivedDone').textContent = received.filter(n => n.status === 'Resolvido').length;
+    $('dashReceivedTotal').textContent = received.length;
+
+    $('dashSentPending').textContent = sent.filter(n => n.status !== 'Resolvido').length;
+    $('dashSentDone').textContent = sent.filter(n => n.status === 'Resolvido').length;
+    $('dashSentTotal').textContent = sent.length;
+
+    $('tabReceivedCount').textContent = receivedPending;
+    $('tabReceivedCount').style.display = receivedPending ? 'inline-flex' : 'none';
+    $('mobilePendingCount').textContent = receivedPending;
+    $('mobilePendingCount').style.display = receivedPending ? 'inline-flex' : 'none';
+  }
+
+  async function refreshNotifications(showErrors=true){
+    if(!state.loggedUser.login) return renderLists();
+
+    try{
+      const [receivedData, sentData] = await Promise.all([
+        appPost('listarNotificacoes', { login: state.loggedUser.login, modo:'recebidas' }),
+        appPost('listarNotificacoes', { login: state.loggedUser.login, modo:'enviadas' })
+      ]);
+
+      state.receivedNotifications = Array.isArray(receivedData.notificacoes) ? receivedData.notificacoes.map(normalizeNotification) : [];
+      state.sentNotifications = Array.isArray(sentData.notificacoes) ? sentData.notificacoes.map(normalizeNotification) : [];
+      state.connected = true;
+
+    }catch(error){
+      state.connected = false;
+      if(showErrors) showStatus('Não foi possível carregar notificações do Apps Script: ' + error.message, 'error');
+    }
+
+    renderLists();
+    processarAlertasRecebidas(false);
+  }
+
+  function seedDemo(){
+    // Sem dados fictícios em área funcional. As notificações reais vêm do Apps Script.
+  }
+
+  async function init(){
+    loadState();
+    applySession();
+    loadAlertState();
+
+    if(!state.users.length){
+      state.users = [state.loggedUser].map(formatUser);
+    }
+
+    seedDemo();
+    renderUsers();
+    renderDraftPhotos();
+    renderLists();
+    syncMessageCounter();
+
+    $('notifyMessage')?.addEventListener('input', syncMessageCounter);
+    $('recipientSearch')?.addEventListener('input', renderUsers);
+
+    await loadUsers();
+    await refreshNotifications(false);
+    iniciarMonitoramentoNotificacoes();
+
+    saveState();
+  }
+
+  document.addEventListener('pointerdown', function liberarAudioPrimeiroToque(){
+    if(!state.audioEnabled){
+      try{
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if(AudioCtx && !state.audioContext) state.audioContext = new AudioCtx();
+      }catch(error){}
+    }
+    document.removeEventListener('pointerdown', liberarAudioPrimeiroToque);
+  }, { once:true });
+
+
+  // Garante compatibilidade com onclick inline no WebView/Capacitor.
+  Object.assign(window, {
+    setTab,
+    ativarAlertasSonoros,
+    renderUsers,
+    selectAllUsers,
+    addDraftPhotos,
+    removeDraftPhoto,
+    clearDraftPhotos,
+    sendNotification,
+    toggleDetails,
+    toggleResolve,
+    addSolutionPhotos,
+    removeSolutionDraftPhoto,
+    markResolved
+  });
+
+  init();
+</script>
+</body>
+</html>
